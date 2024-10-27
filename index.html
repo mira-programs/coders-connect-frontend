@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>Coders Connect</title>
+</head>
+<body>
+    <div class="fullBackground"></div>
+    <div class="container">
+        <h2 class="tagline">idk but there should be a tagline here</h2>
+        <div class="welcomeScreen">
+            <h1 class="typingAnimation">Welcome to Coders Connect</h1>
+            <p class = "desc">A coder's haven for something (ask mira w rhea)</p>
+            <div class="welcButtons">
+                <button id="log" class="logSin">Login</button>
+                <button id="sign" class="logSin">Sign Up</button>
+            </div>
+        </div>
+        
+        <div class="contForm hidden" id="contForm">
+            <form id="loginForm" class="form hidden" action="#">
+                <div class="logTopping">
+                    <button id="backBtn" class="backBtn">&#10554</button>
+                    <h2>Login</h2>
+                </div>
+                <div class="inputStuff">
+                    <span class="icon">📧</span>
+                    <input type="email" placeholder="Email" required>
+                </div>
+                <div class="inputStuff">
+                    <span class="icon">🔒</span>
+                    <input type="password" placeholder="Password" required>
+                </div>
+                <button type="submit">Login</button>
+                <div class="pickForm">
+                    <span>Don't have an account?</span>
+                    <a id="signupBut" class="pickBtn" href="#">Sign Up</a>
+                </div>
+                <div class="pickForm">
+                    <span>Forgot Your Password?</span>
+                    <a id="loserPass" class="pickBtn" href="#">Click Here</a>
+                </div>
+                
+            </form>
+
+            <form id="signupForm" class="form hidden" action="#">
+                <div class="signTopping">
+                    <button id="backBtn2" class="backBtn">&#10554</button>
+                    <h2>Sign Up</h2>
+                </div>
+                <div class="inputStuff">
+                    <span class="icon">👤</span>
+                    <input type="text" placeholder="Username" required>
+                </div>
+                <div class="inputStuff">
+                    <span class="icon">📧</span>
+                    <input type="email" placeholder="Email" required>
+                </div>
+                <div class="inputStuff">
+                    <span class="icon">🔒</span>
+                    <input type="password" placeholder="Password" required>
+                </div>
+                <div class="inputStuff">
+                    <span class="icon">🙋</span>
+                    <input type="text" placeholder="First Name" required>
+                </div>
+                <div class="inputStuff">
+                    <span class="icon">🧑‍🏫</span>
+                    <input type="text" placeholder="Last Name" required>
+                </div>
+                <div class="inputStuff">
+                    <span class="icon">💼</span>
+                    <input type="text" placeholder="Occupation" required>
+                </div>
+                <div class="inputStuff">
+                    <span class="icon">🖼️</span>
+                    <input type="file" accept="image/*" required>
+                </div>
+                <button type="submit">Sign Up</button>
+                <div class="pickForm">
+                    <span>Already have an account?</span>
+                    <a id="loginBut" class="pickBtn" href="#">Login</a>
+                </div>
+                <div class="pickForm">
+                    <span>Forgot Your Password?</span>
+                    <a id="loserPass2" class="pickBtn" href="#">Click Here</a>
+                </div>
+            </form>
+
+            <form id="passForm" class="form hidden" action="#">
+                <div class="passTopping">
+                    <button id="backBtn3" class = "backBtn">&#10554</button>
+                    <h2>Create New Password</h2>
+                </div>
+                <div class="inputStuff">
+                    <span class="icon">📧</span>
+                    <input type="email" placeholder="Email" required>
+                </div>
+                <div class="inputStuff">
+                    <span class="icon">🔒</span>
+                    <input type="password" placeholder="New Password" required>
+                </div>
+                <button id="newPass" type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const welcomeText = document.querySelector('.typingAnimation');
+            welcomeText.classList.add('typingAnimation');
+        });
+    </script>
+ <!--   <footer>
+        <p>Copyright © 2024 CodersConnect</p>
+    </footer>-->
+</body>
+</html>

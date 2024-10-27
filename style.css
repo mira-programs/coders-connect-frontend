@@ -1,0 +1,224 @@
+body{
+    font-family: 'Fira Code', monospace; 
+    background-color: #1e1e2e;
+    /* background-image: url('path'); ask mira and rhea */
+    /* background-size: cover;  */
+    /*background-position: center; */
+    /*background-repeat: no-repeat;*/
+    color: #dcdcdc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.fullBackground{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(30, 30, 46, 0.1); 
+
+}
+
+.container{
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.tagline {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: orange;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+}
+
+.typingAnimation{
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 0.15em solid #0078d4; 
+    animation: typing 3.5s steps(30, end), blink-caret 0.75s step-end infinite;
+    color: #0078d4 ;
+}
+
+/*I hope these will work*/
+@keyframes typing{
+    from {width: 0;}
+    to {width: 100%;}
+}
+@keyframes blink-caret{
+    from, to {border-color: transparent;}
+    50% {border-color: #0078d4;}
+}
+
+.welcButtons{
+    margin-top: 1rem;
+}
+
+.logSin{
+    background: #3d9dc6; 
+    color: #2a2a38;
+    border: none;
+    border-radius: 6px;
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    margin: 0 0.5rem;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.logSin:hover{
+    background: #4da3e1;
+    transform: scale(1.05);
+}
+
+.contForm{
+    background: rgba(62, 62, 85, 0.9);
+    border-radius: 12px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.8);
+    padding: 2rem;
+    width: 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.logTopping{
+    display: flex;
+    flex-direction: row;
+}
+
+.logTopping h2{
+    margin-left: 7.5rem;
+}
+
+.signTopping{
+    display: flex;
+    flex-direction: row;
+}
+
+.signTopping h2{
+    margin-left: 5rem;
+}
+
+.passTopping{
+    display: flex;
+    flex-direction: row;
+}
+
+.pickForm {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    margin-top: 1rem; 
+}
+
+.pickForm span {
+    margin-right: 0.2rem; 
+    color: #3d9dc6; 
+    font-size: 0.8rem;
+}
+
+.form .pickBtn {
+    background: none;
+    color: #3d9dc6; 
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: color 0.3s;
+    margin-top: 0.1rem; 
+    outline: none;
+    text-decoration: none;
+}
+
+.form .pickBtn:hover{
+    background: none;
+    color: #388e3c;
+    text-decoration: underline;
+}
+
+.form{
+    display: flex;
+    flex-direction: column;
+}
+
+.form h2{
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+}
+
+.inputStuff{
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background: #333;
+}
+
+.icon{
+    padding: 0.5rem;
+}
+
+.inputStuff input{
+    flex: 1;
+    padding: 0.7rem;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: #fff;
+}
+
+.inputStuff input::placeholder{
+    color: #bbb;
+}
+
+.inputStuff input:focus{
+    border-color: #61dafb;
+    outline: none;
+}
+
+.form button{
+    padding: 0.8rem;
+    border: none;
+    background: #61dafb;
+    color: #2a2a38;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.form button:hover{
+    background: #4da3e1;
+    transform: scale(1.05);
+}
+
+.form .backBtn{
+    font-size: 2.5rem;
+    background: none;
+    color: #bbb;
+}
+
+.form .backBtn:hover{
+    background: none;
+}
+
+.hidden{
+    display: none;
+}
+
+/*footer {
+    background-color: #110829;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}*/
