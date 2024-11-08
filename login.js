@@ -140,7 +140,9 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         
         if (result.status === "SUCCESS") {
             alert("Login successful!");
-            // Redirect or update the UI as needed
+            // Store the token in localStorage for use in future requests
+            localStorage.setItem('authToken', result.token);
+            // todo, redirect to a protected page / update the UI
         } else {
             alert(result.message);
         }
@@ -149,3 +151,4 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         alert("An error occurred. Please try again.");
     }
 });
+
