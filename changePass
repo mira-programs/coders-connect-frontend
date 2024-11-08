@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="login.css">
+    <title>New Password</title>
+</head>
+<body>
+    <div class="fullBackground"></div>
+    <div class="container">
+        <h2 class="tagline">idk but there should be a tagline here</h2>
+        <div class="contForm">
+            <form id="newPassForm" class="form" action="#">
+                <div class="passTopping">
+                    <button id="backBtn3" class="backBtn" href="login.html">&#10554</button>
+                    <h2>Create New Password</h2>
+                </div>
+                <div class="inputStuff">
+                    <span class="icon">🔒</span>
+                    <input type="password" placeholder="New Password" required>
+                </div>
+                <button type="submit">Create New Password</button>
+            </form>
+        </div>
+    </div>
+    <script src="login.js"></script>
+</body>
+</html>
