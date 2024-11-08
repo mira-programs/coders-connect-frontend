@@ -12,7 +12,7 @@ body{
     height: 100vh;
     margin: 0;
     position: relative;
-    overflow: hidden;
+    overflow-y: hidden;
 }
 
 .fullBackground{
@@ -43,7 +43,7 @@ body{
     overflow: hidden;
     border-right: 0.15em solid #0078d4; 
     animation: typing 3.5s steps(30, end), blink-caret 0.75s step-end infinite;
-    color: #0078d4 ;
+    color: #0078d4;
 }
 
 /*I hope these will work*/
@@ -137,10 +137,28 @@ body{
     text-decoration: none;
 }
 
-.form .pickBtn:hover{
+.form .pickBtn:hover{    
     background: none;
     color: #388e3c;
     text-decoration: underline;
+}
+
+.form .changeP{
+    background: #3d9dc6; 
+    color: #2a2a38;
+    border: none;
+    border-radius: 6px;
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    margin: 0 0.5rem;
+    transition: background 0.3s, transform 0.3s;
+    text-decoration: none;
+}
+
+.form .changeP:hover{
+    background: #4da3e1;
+    transform: scale(1.05);
 }
 
 .form{
