@@ -1,0 +1,69 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="profile.css">
+    <title>Other User</title>
+</head>
+
+<body>
+    <div class="mainCont">
+        <div class="sidebar">
+            <div class="sidebarThing">
+                <a id = "connect" href="mainpage.html">Coders Connect</a>
+            </div>
+            <div class="sidebarThing">
+                <a href="profile.html">
+                    <div class="pfp">
+                        <img src="profile.jpg" alt="Profile Picture" id="sidebarPfp">
+                    </div>
+                </a>
+            </div>
+            <div class="sidebarThing middle">
+                <a href="mainpage.html">Home</a>
+                <a href="friends.html">Friends</a>
+                <a href="messages.html">Messages</a>
+            </div>
+            <div class="sidebarThing settings">
+                <a href="settings.html">Settings</a>
+            </div>
+        </div>
+
+        <div class="profile">
+            <div class="profileHead">
+                <div class="profilePic">
+                    <img src="profile.jpg" alt="Profile Picture" id="mainPfp">
+                </div>
+                <div class="profileAtt">
+                    <h1 class="name">Taylor Swift</h1> <!--Here are name, username, etc etc-->
+                    <p class="username">@taylorswift13</p>
+                    <p class="occupation">Singer/Songwriter/Coder</p>
+                    <p class="bio">She sings in code trust. She also likes cat</p>
+
+                    <button id="frndBtn" class="friendButton">Request Friendship?</button>
+                </div>
+            </div>
+
+            <div class="demog">
+                <div class="stat">
+                    <strong id="numPosts">120</strong>  <!--Here are posts and friends etc etc-->
+                    <span>Posts</span>
+                </div>
+                <div class="stat">
+                    <strong id="numFriends">200</strong>
+                    <span>Friends</span>
+                </div>
+            </div>
+
+            <div class="posts">
+                <div class="postGrid" id="postGrid">
+                    <!-- posts here i added them in js -->
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <script src="profile.js"></script>
+</body>
+
+</html>
