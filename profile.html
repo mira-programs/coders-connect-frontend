@@ -3,43 +3,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="profile.css">
-    <title>Profile</title>
+    <title id="pageTitle">Profile</title>
 </head>
 
 <body>
     <div class="mainCont">
         <div class="sidebar">
             <div class="sidebarThing">
-                <a id = "connect" href="#">Coders Connect</a>
+                <a id = "connect" href="mainpage.html">Coders Connect</a>
             </div>
             <div class="sidebarThing">
                 <a href="#">
                     <div class="pfp">
-                        <img src="profile.jpg" alt="Profile Picture">
+                        <img src="profile.jpg" alt="Profile Picture" id="sidebarPfp">
                     </div>
                 </a>
             </div>
             <div class="sidebarThing middle">
-                <a href="#">Home</a>
-                <a href="#">Friends</a>
-                <a href="#">Messages</a>
+                <a href="mainpage.html">Home</a>
+                <a href="friends.html">Friends</a>
+                <a href="messages.html">Messages</a>
             </div>
             <div class="sidebarThing settings">
-                <a href="#">Settings</a>
+                <a href="settings.html">Settings</a>
             </div>
         </div>
 
         <div class="profile">
             <div class="profileHead">
                 <div class="profilePic">
-                    <img src="profile.jpg" alt="Profile Picture">
+                    <img src="profile.jpg" alt="Profile Picture" id="mainPfp">
                 </div>
                 <div class="profileAtt">
                     <h1 class="name">Taylor Swift</h1> <!--Here are name, username, etc etc-->
                     <p class="username">@taylorswift13</p>
                     <p class="occupation">Singer/Songwriter/Coder</p>
                     <p class="bio">She sings in code trust. She also likes cat</p>
-                    <!--<button class="req">Friend Request</button>--> 
+
+                    <button id="editBtn" class="editButton">Edit</button>
+                </div>
+            </div>
+
+            <div id="editBox" class="editBox">
+                <div class="editBoxAtt">
+                    <span id="closeEB" class="closeEB">&times;</span>
+                    <h2>Edit Profile</h2>
+                    <div class="editPfp">
+                        <img src="profile.jpg" alt="Profile Picture" id="profilePicInput" onclick="document.getElementById('fileInput').click();">
+                        <input type="file" id="fileInput" accept="image/*">
+                    </div>
+                    <label for="editName">Name</label>
+                    <input id="editName" type="text" placeholder="Edit Name">
+                    
+                    <label for="editBio">Bio</label>
+                    <textarea id="editBio" placeholder="Edit Bio"></textarea>
+                    
+                    <label for="editOccupation">Occupation</label>
+                    <input id="editOccupation" type="text" placeholder="Edit Occupation">
+                    
+                    <button id="saveBtn" class="saveButton">Save</button>
                 </div>
             </div>
 
@@ -62,6 +84,7 @@
             
         </div>
     </div>
+    <script src="profile.js"></script>
 </body>
 
 </html>
