@@ -22,6 +22,9 @@ body{
     padding-top: 20px;
     padding-bottom: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
 .sidebarThing{
@@ -32,7 +35,7 @@ body{
 
 .sidebarThing a{
     text-decoration: none;
-    color: #dcdcdc; /* Light text color */
+    color: #dcdcdc;
     font-size: 1rem;
     display: block;
     transition: background-color 0.3s ease;
@@ -77,6 +80,7 @@ body{
     flex: 1;
     padding: 20px;
     overflow-y: auto;
+    margin-left: 200px;
 }
 
 .profileHead{
@@ -88,12 +92,15 @@ body{
 .profilePic{
     flex: 0 0 150px;
     margin-right: 20px;
+    overflow: hidden;
 }
 
 .profilePic img{
     width: 100%;
+    height: 90%;
     border-radius: 50%;
     object-fit: cover;
+    overflow-clip-margin: unset;
 }
 
 .profileAtt{
@@ -110,6 +117,7 @@ body{
 .profileAtt .username{
     margin: 0;
     color: #bbb;
+    font-size: 12px;
 }
 
 .profileAtt .occupation{
@@ -120,6 +128,19 @@ body{
 .profileAtt .bio{
     color: #bbb; 
     font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+.profileAtt h1,
+.profileAtt p {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #61dafb;
+}
+
+.profileAtt input,
+.profileAtt textarea {
+    display: none;
     margin-top: 10px;
 }
 
@@ -185,3 +206,105 @@ body{
     object-fit: cover;
     border-radius: 8px;
 }
+
+.editButton, .saveButton, .friendButton{
+    background-color: #61dafb;
+    color: #2a2a38;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 10px;
+    transition: background 0.3s;
+}
+
+.editButton:hover, .saveButton:hover, .friendButton:hover{
+    background-color: #4da3e1;
+}
+
+.editField input, .editField textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+.editBox{
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.editBoxAtt{
+    background-color: #3b3b5a;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 400px;
+    position: relative;
+}
+
+.editBoxAtt input, .editBoxAtt textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    background-color: lightgray;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.editBoxAtt label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.editPfp{
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: inline-block;
+    border: 2px solid #3d9dc6;
+}
+
+.editPfp img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.scroll {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    height: 92vh;
+}
+
+.closeEB {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.frndReq {
+    background-color:lightgreen;
+}
+
+.frndReq:hover {
+    background-color:darkgreen;
+}
+
+
