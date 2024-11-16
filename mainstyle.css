@@ -1,16 +1,20 @@
-body {
-    display: flex;
+body{
+    font-family: 'Fira Code', monospace;
+    background-color: #1e1e2e;
+    color: #dcdcdc;
     margin: 0;
-    font-family: Arial, sans-serif;
+    padding: 0;
+    display: flex;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
-.container {
+.container{
     display: flex;
     width: 100%;
 }
-
-.sidebar {
-    background-color: #1a1a26;
+.sidebar{
+    background-color: #1a1a26; 
     width: 200px;
     height: 100vh;
     display: flex;
@@ -18,7 +22,34 @@ body {
     padding-top: 20px;
     padding-bottom: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
 }
+
+.sidebarThing{
+    padding: 15px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.sidebarThing a{
+    text-decoration: none;
+    color: #dcdcdc;
+    font-size: 1rem;
+    display: block;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.sidebarThing a#connect{
+    padding: 15px;
+    margin-top: 0px;
+    padding-top: 0px;
+    color: #0078d4;
+}
+
 .pfp{
     width: 80px;
     height: 80px;
@@ -27,6 +58,14 @@ body {
     display: inline-block;
     border: 2px solid #3d9dc6;
 }
+
+.pfp img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
 .sidebarThing a:hover{
     background-color: #3d9dc6;
     border-radius: 5px;
@@ -37,51 +76,36 @@ body {
     margin-top: auto;
 }
 
-.pfp img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
 .main-content {
     flex-grow: 1;
     padding: 20px;
+    overflow-y: auto;
+    margin-left: 200px;
     background-color: #1e1e2e;
 }
 
-.sidebarThing {
-    padding: 15px;
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-.sidebarThing a {
-    text-decoration: none;
-    color: #dcdcdc;
-    font-size: 1rem;
-    display: block;
-    transition: background-color 0.3s ease;
-    margin-top: 20px;
-    text-align: center;
-}
-
-.sidebarThing a#connect {
-    color: #0078d4;
-}
-
-.pfp {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    border: 2px solid #3d9dc6;
-}
 #resetButton{
-    background-color: #1e1e2e;
-    border-radius: 5px;
-    margin-left: 7px;
-    color: white;
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s;
+    margin-left: 10px;
 
 }
+
+#resetButton:hover {
+    background-color: #c0392b;
+}
+
+#clearBtn:focus {
+    outline: none;
+    background-color: #e74c3c;
+}
+
 .explore-section{
   
     .chosensection{
@@ -98,7 +122,7 @@ body {
     p{ cursor: pointer;
         color: grey;
     }
-border-bottom: 1px solid grey;
+    border-bottom: 1px solid grey;
 }
 .custom-file-upload {
     display: flex;
@@ -116,7 +140,7 @@ border-bottom: 1px solid grey;
 }
 
 #fileInput {
-    display: none; /* Hide the default file input */
+    display: none;
 }
 
 #fileNameDisplay {
@@ -126,7 +150,8 @@ border-bottom: 1px solid grey;
 
 .posting-section{
     display: flex;
-flex-direction: row;
+    flex-direction: row;
+    margin-top: 20px;
 
   
     .postingpics{
@@ -148,71 +173,68 @@ flex-direction: row;
             }
         }
         #posttextbox{
-            font-size: 20px;
-            margin-top: 7px;
-            margin-left: 5px;
-            height: 80px;
-            width: 70vmax;
-           resize: none;
+            font-size: 16px;
+            width: 100%;
+            background-color: transparent;
+            color: white;
             border: none;
-           color: white;
-           outline: none;
-            overflow: auto;
-            background-color: #1e1e2e;
-            
-        
-    
-    }
+            padding: 10px;
+            resize: none;
+            outline: none;
+            margin-bottom: 10px;
+        }
     .posting-actions{
         #privacySelect{
-            background-color: #1a1a26;
-            color: white;
-            margin-left: 8px;
-            border-color: grey;
-            border-radius: 3px;
+            background-color: #333;
+            color: #fff;
+            border: 0.75px solid #444;
+            padding: 5.8px;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            transition: background 0.3s ease, color 0.3s ease;
+            width: 90px;  
+        }
+        #privacySelect:hover {
+            background-color: #444;
+        }
+        #privacySelect:focus {
+            outline: none;
+            background-color: #555;
         }
    
-        margin-bottom: 10px;
-           display: flex;
-         align-items: center;
-         .buttons{
-           margin-left: auto;
-           background-color: #0078d4; 
-           border-radius: 10px;
-           color:white;
-           width: 50px;
-           height: 2em;
-           cursor: pointer;
-         }
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        .buttons{
+            background-color: #61dafb;
+            color: #2a2a38;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+        .buttons:hover{
+            background-color: #4da3e1;
+        }
        }
 }
 
-
-
-
-
-
-
-
-
 .post {
     
-    color: white;
-    background-color: #1e1e2e;
-    padding: 4px;
-    max-height: 500px;
-    
-    border-top: 1px solid grey;
+    background-color: #1a1a26;
+    padding: 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     .post-content{
-    display: flex;
-    flex-direction: column; 
-    justify-content: space-between; 
-    width: 100%;
-}
+        color: white;
+    }
     .post-header {
-        margin-top: 5px;
         display: flex;
-        gap: 5px;
+        margin-bottom: 10px;
     }
     .imagesposted{
         margin-left: auto; 
@@ -222,16 +244,16 @@ flex-direction: row;
         img{
             max-width: 300px;
             max-height: 300px;
+            border-radius: 8px;
         } overflow-y: hidden;
      
     }
     .post-pfp{
         img{
-            margin-top: 10px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            height: 30px;
-            width: 30px;
-            align-items: center;
+            margin-right: 10px;
         }
     }
     .post-footer{
@@ -243,15 +265,20 @@ flex-direction: row;
         }
         
         display: flex;
-      align-items: center;
+        justify-content: space-between;
+        align-items: center;
       .optionsposts{
         margin-left: auto;
-        
         color:grey;
         cursor: pointer;
+        .footerpostspics {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
       }  
     }
-  
+    
 }
 .sharecomment{
     
@@ -306,19 +333,71 @@ flex-direction: row;
        display: flex;
        flex-direction: row;
     }
+    .likes-count {
+        color: #bbb;
+    }
 }
 
 .posts {
     display: flex;
     flex-direction: column;
-   
     margin: 5px;
     padding: 0px;
     
 }
-body{
-    overflow: hidden;
+
+.cbutton{
+    background-color: #61dafb;
+    color: #2a2a38; 
+    border: none;
+    padding: 20px 26px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s, transform 0.2s;
+    white-space: nowrap;
 }
+.cbutton:hover{
+    background-color: #4da3e1;
+    transform: scale(1.05);
+}
+.cbutton:focus{
+    outline: none;
+}
+.cbutton:active{
+    transform: scale(0.98);
+}
+
+.commenttextbox {
+    font-size: 16px;
+    padding: 15px 20px;
+    width: 60vmax;
+    resize: none;
+    color: lightgray;
+    outline: none;
+    background-color: #2a2a38; 
+    border: 1px solid #444;
+    border-radius: 25px;
+    box-sizing: border-box;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+.commenttextbox:focus {
+    border-color: #61dafb;
+    box-shadow: 0 0 5px rgba(97, 218, 251, 0.6); 
+}
+
+
+
+
+
+
+
+
 .scroll {
     
     display: flex;
@@ -352,7 +431,6 @@ body{
 .scroll::-webkit-scrollbar-thumb:hover {
     background: darkgray; 
 }
-
 
 
 
