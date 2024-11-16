@@ -39,9 +39,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             <p>${post.content}</p>
                             ${post.media ? `<div class="imagesposted"><img src="${post.media}" alt="post media" /></div>` : ''}
                             <div class="post-footer">
-                                <img class="footerpostspics like-button" src="images/imageforposting.png" alt="like" />
-                                <img class="footerpostspics dislike-button" src="images/imageforposting.png" alt="dislike" />
-                                <img class="footerpostspics comment-button" src="images/imageforposting.png" alt="comment" />
+                                <img class="footerpostspics like-button" src="images/like.png" alt="like" /> 
+                                <p>${post.likes}</p>
+                                <img class="footerpostspics dislike-button" src="images/dislike.png" alt="dislike" />
+                                 <p>${post.dislikes}</p>
+                                <img class="footerpostspics comment-button" src="images/uploadimage.png" alt="comment" />
                                 <p class="optionsposts">...</p>
                             </div>
                             <div class="commentssection" style="display: none;">
@@ -53,7 +55,11 @@ document.addEventListener('DOMContentLoaded', () => {
                                         <div class="commentcontent">
                                             <p class="commentusername">${comment.username}</p>
                                             <p class="contentcomment">${comment.text}</p>
-                                            <p class="likes-count">Likes: ${comment.likes.length}</p>
+                                            <div class=likes>
+                                                    <img class="commentlike" src="images/like.png" alt="like" /> 
+                                                    <p class="likes-count">${comment.likes.length}</p> 
+                                                </div>
+                                          
                                             <div class="replies">
                                                 ${comment.replies.map(reply => `
                                                     <div class="replywrap">
@@ -81,8 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Event listener for like/dislike buttons
                 const likeButton = postElement.querySelector('.like-button');
                 const dislikeButton = postElement.querySelector('.dislike-button');
-                likeButton.addEventListener('click', () => toggleLikeDislike(post._id, 'like'));
-                dislikeButton.addEventListener('click', () => toggleLikeDislike(post._id, 'dislike'));
+                likeButton.addEventListener('click', () => toggleLikeDislike(post._id, 'like',likeButton));
+                dislikeButton.addEventListener('click', () => toggleLikeDislike(post._id, 'dislike',dislikeButton));
 
                 // Event listener for adding a comment
                 const commentTextbox = postElement.querySelector('.commenttextbox');
@@ -170,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Function to toggle like or dislike
-    async function toggleLikeDislike(postId, type) {
+    async function toggleLikeDislike(postId, type,likeButton) {
         try {
             const response = await fetch(`/api/posts/${postId}/${type}`, {
                 method: 'POST',
@@ -178,8 +184,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 loadPosts('public'); // Reload posts to reflect like/dislike change
+                likeButton.src='images/liked.png';
             } else {
                 console.error('Failed to toggle like/dislike');
+                likeButton.src='images/disliked.png';
             }
         } catch (error) {
             console.error('Error toggling like/dislike:', error);
@@ -187,12 +195,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Event listener for the Post button
+    const fileInput = document.getElementById('fileInput');
+    const preview = document.getElementById('preview');
+    const upload = document.getElementById('uploading');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    const resetButton = document.getElementById('resetButton');
+
+    fileInput.addEventListener('change', function() {
+        const file = this.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (file.type.startsWith('image/')) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    fileNameDisplay.textContent = ''; // Clear file name if it is an image
+                } else {
+                    preview.src = 'placeholder-image.png'; // Reset to placeholder if not an image
+                    preview.style.display = 'none';
+                    fileNameDisplay.textContent = file.name; // Display file name
+                }
+            }
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = 'placeholder-image.png'; // Reset to placeholder
+            preview.style.display = 'none';
+            fileNameDisplay.textContent = '';
+        }
+    });
+
+    resetButton.addEventListener('click', function() {
+        fileInput.value = ''; // Clear the file input
+        preview.src = 'placeholder-image.png'; // Reset the preview image
+        preview.style.display = 'none';
+        fileNameDisplay.textContent = ''; // Reset file name display
+    });
     postButton.addEventListener('click', async () => {
         const content = postTextBox.value.trim();
         const selectedPrivacy = privacySelect.value;
 
         if (content) {
             await addPost(content, selectedPrivacy); // Add the post
+            
         } else {
             alert('Please write something to post.');
         }
