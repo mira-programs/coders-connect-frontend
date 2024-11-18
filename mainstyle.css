@@ -308,6 +308,34 @@ body{
         cursor: pointer;
     }
 }
+.sharereply{
+    
+    display: flex;
+    flex-direction: row;
+    .replytextbox{
+        font-size: 16px;
+     padding-left: 30px;
+    padding-top: 15px;
+    
+        width: 60vmax;
+       resize: none;
+        border-radius: 20px;
+       color: white;
+       outline: none;
+        overflow: auto;
+        background-color: #1e1e2e;
+    }
+    .rbutton{
+        margin-right: 100px;
+       margin-left: auto;
+        background-color: #0078d4; 
+        border-radius: 10px;
+        color:white;
+        width: 80px;
+        
+        cursor: pointer;
+    }
+}
 .commentwrap{
     display: flex;
     flex-direction: row;
@@ -390,8 +418,16 @@ body{
     border-color: #61dafb;
     box-shadow: 0 0 5px rgba(97, 218, 251, 0.6); 
 }
-
-
+.replytocomments{
+    height: 20px;
+    width: 20px;
+    margin-top: 14px;
+    margin-left: 4px;
+    cursor: pointer;
+}
+.commentlike{
+    cursor: pointer;
+}
 
 
 
@@ -431,6 +467,5 @@ body{
 .scroll::-webkit-scrollbar-thumb:hover {
     background: darkgray; 
 }
-
 
 
