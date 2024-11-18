@@ -1,5 +1,3 @@
-// i made chatgpt help debugg a bit and still not done im working 
-// on the fetching i still dont fully understand it
 document.addEventListener('DOMContentLoaded', () => {
     const postsContainer = document.querySelector('.posts');
     const postTextBox = document.getElementById('posttextbox');
@@ -7,12 +5,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const privacySelect = document.createElement('select');
     const exploreSection = document.querySelector('.explore-section');
 
-    // Simulated fetchPosts function (replace with real API call)
+  
     async function fetchPosts(filterType) {
+
         try {
-            const response = await fetch(`/api/posts?privacy=${filterType}`);
+            if(filterType==="friends"){
+            const response = await fetch(`/api/post/feed`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             const posts = await response.json();
-            return posts;
+            return posts;}
+            else{
+                const response = await fetch(`/api/post`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                const posts = await response.json();
+                return posts;
+            }
+            
         } catch (error) {
             console.error('Error fetching posts:', error);
             return [];
@@ -23,47 +39,55 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadPosts(filterType) {
         try {
             const posts = await fetchPosts(filterType);
-            
             postsContainer.innerHTML = '';
 
             posts.forEach(post => {
                 const postElement = document.createElement('div');
                 postElement.classList.add('post');
                 postElement.innerHTML = `
-                    <div class="post-header">
+                    <div class="post-header" data-post-id="${post._id}"> <!-- Highlighted change: added data-post-id attribute -->
                         <div class="post-pfp">
                             <img src="${post.userProfilePic}" alt="profile" />
                         </div>
                         <div class="post-content">
-                            <p>${post.username}</p>
+                            <p class="username clickable">${post.username}</p> <!-- Highlighted change: added 'clickable' class for event listener -->
                             <p>${post.content}</p>
                             ${post.media ? `<div class="imagesposted"><img src="${post.media}" alt="post media" /></div>` : ''}
                             <div class="post-footer">
                                 <img class="footerpostspics like-button" src="images/like.png" alt="like" /> 
-                                <p>${post.likes}</p>
+                                <p>${post.likes.length}</p>
                                 <img class="footerpostspics dislike-button" src="images/dislike.png" alt="dislike" />
-                                 <p>${post.dislikes}</p>
-                                <img class="footerpostspics comment-button" src="images/uploadimage.png" alt="comment" />
+                                <p>${post.dislikes.length}</p>
+                                <img class="footerpostspics comment-button" src="images/comment.png" alt="comment" />
                                 <p class="optionsposts">...</p>
                             </div>
                             <div class="commentssection" style="display: none;">
+                             <div class="sharecomment" >
+                                            <textarea class="commenttextbox" rows="2" cols="50" placeholder="comment!"></textarea>
+                                            <button class="cbutton">comment!</button>
+                                        </div>
                                 ${post.comments.map(comment => `
-                                    <div class="commentwrap">
+
+                                    <div class="commentwrap" data-comment-id="${comment._id}">
                                         <div class="commentpfp">
                                             <img src="${comment.userProfilePic}" alt="profile" />
                                         </div>
                                         <div class="commentcontent">
-                                            <p class="commentusername">${comment.username}</p>
+                                            <p class="commentusername clickable">${comment.username}</p> <!-- Highlighted change: added 'clickable' class for event listener -->
                                             <p class="contentcomment">${comment.text}</p>
-                                            <div class=likes>
-                                                    <img class="commentlike" src="images/like.png" alt="like" /> 
-                                                    <p class="likes-count">${comment.likes.length}</p> 
-                                                </div>
-                                          
+                                            <div class="likes">
+                                                <img class="commentlike" src="images/like.png" alt="like" /> 
+                                                <p class="likes-count">${comment.likes.length}</p>
+                                                <img class="replytocomments" src="images/comment.png" alt="reply" /> <!-- Highlighted change: added event listener for reply -->
+                                            </div>
+                                            <div class="sharereply" style="display: none;">
+                                                <textarea class="replytextbox" rows="2" cols="50" placeholder="Reply!"></textarea>
+                                                <button class="rbutton">Reply!</button>
+                                            </div>
                                             <div class="replies">
                                                 ${comment.replies.map(reply => `
                                                     <div class="replywrap">
-                                                        <p class="replyusername">${reply.username}</p>
+                                                        <p class="replyusername clickable">${reply.username}</p> <!-- Highlighted change: added 'clickable' class for event listener -->
                                                         <p class="replycontent">${reply.text}</p>
                                                     </div>
                                                 `).join('')}
@@ -77,23 +101,72 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 postsContainer.appendChild(postElement);
 
+           
+              
+                // Event listeners for like and reply buttons in comments
+                const commentLikes = postElement.querySelectorAll('.commentlike');
+                commentLikes.forEach(like => {
+                    like.addEventListener('click', () => {
+                        
+                        const postId = postElement.getAttribute('data-post-id');
+                        const commentId = postElement.getAttribute('data-comment-id');
+                        toggleLikeDislikecomment(postId,like,commentId);
+                    });
+                });
+
+                const replyButtons = postElement.querySelectorAll('.replytocomments');
+                replyButtons.forEach(replyBtn => {
+                    const replyBox = replyBtn.closest('.commentcontent').querySelector('.sharereply');
+                    replyBtn.addEventListener('click', () => {
+                        replyBox.style.display = replyBox.style.display === 'none' ? 'block' : 'none';
+                    });
+                    // Event listener for adding a reply
+                    const replyButton = replyBox.querySelector('.rbutton');
+                    replyButton.addEventListener('click', () => {
+                        const postId = postElement.getAttribute('data-post-id');
+                        const commentId = replyBtn.closest('.commentwrap').getAttribute('data-comment-id');
+                        const replyText = replyBox.querySelector('.replytextbox').value;
+                        addReply(postId, commentId, replyText);
+                    });
+                });
                 // Toggle comments section visibility
                 const commentButton = postElement.querySelector('.comment-button');
                 const commentsSection = postElement.querySelector('.commentssection');
                 commentButton.addEventListener('click', () => {
                     commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
                 });
-
-                // Event listener for like/dislike buttons
-                const likeButton = postElement.querySelector('.like-button');
-                const dislikeButton = postElement.querySelector('.dislike-button');
-                likeButton.addEventListener('click', () => toggleLikeDislike(post._id, 'like',likeButton));
-                dislikeButton.addEventListener('click', () => toggleLikeDislike(post._id, 'dislike',dislikeButton));
+                 //Event listener for likepost
+                 const likeimage = postElement.querySelector('.like-button');
+                 likeimage.addEventListener('click',()=>{
+                    const postId = postElement.getAttribute('data-post-id');
+                    toggleLikeDislike(likeimage,postId);
+                 });
+                 //event listener dislike
+                 const dislikeimage = postElement.querySelector('.dislike-button');
+                 likeimage.addEventListener('click',()=>{
+                    const postId = postElement.getAttribute('data-post-id');
+                    toggleLikeDislike(dislikeimage,postId);
+                 });
 
                 // Event listener for adding a comment
-                const commentTextbox = postElement.querySelector('.commenttextbox');
-                const commentButtonPost = postElement.querySelector('.cbutton');
-                commentButtonPost.addEventListener('click', () => addComment(post._id, commentTextbox.value));
+                const commentTextBox = postElement.querySelector('.commenttextbox');
+                const commentSubmitButton = postElement.querySelector('.cbutton');
+                if (commentSubmitButton) {
+                    commentSubmitButton.addEventListener('click', () => {
+                        const postId = postElement.getAttribute('data-post-id');
+                        const commentText = commentTextBox.value;
+                        addComment(postId, commentText);
+                    });
+                }
+
+                // Event listener for username clicks
+                const usernames = postElement.querySelectorAll('.clickable');
+                usernames.forEach(username => {
+                    username.addEventListener('click', (e) => {
+                        const selectedUsername = e.target.textContent;
+                        window.location.href = `profile.html?user=${selectedUsername}`; 
+                    });
+                });
             });
         } catch (error) {
             console.error('Error loading posts:', error);
@@ -101,16 +174,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Function to add a new post
-    async function addPost(content, privacy) {
+    async function addPost(content, privacy,media) {
         try {
             const response = await fetch('/api/posts', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
                 body: JSON.stringify({
                     content,
                     privacy,
+                    media,
                 }),
             });
 
@@ -129,13 +203,14 @@ document.addEventListener('DOMContentLoaded', () => {
     async function addComment(postId, text) {
         if (text.trim()) {
             try {
-                const response = await fetch(`/api/posts/${postId}/comments`, {
+                const response = await fetch(`/api/post/comment-post`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
                     },
                     body: JSON.stringify({
                         text,
+                        postId,
                     }),
                 });
 
@@ -154,14 +229,16 @@ document.addEventListener('DOMContentLoaded', () => {
     async function addReply(postId, commentId, text) {
         if (text.trim()) {
             try {
-                const response = await fetch(`/api/posts/${postId}/comments/${commentId}/replies`, {
+                const response = await fetch(`/api/post/comment-reply`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
                     },
                     body: JSON.stringify({
                         text,
-                    }),
+                        commentId,
+                        postId,
+                    })
                 });
 
                 if (response.ok) {
@@ -170,24 +247,89 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Failed to add reply');
                 }
             } catch (error) {
+               
+
                 console.error('Error adding reply:', error);
             }
         }
     }
-
-    // Function to toggle like or dislike
-    async function toggleLikeDislike(postId, type,likeButton) {
-        try {
-            const response = await fetch(`/api/posts/${postId}/${type}`, {
+ // Function to toggle like or dislike comments
+ async function toggleLikeDislikecomment(postId, likeButton,commentId) {
+    try {
+        if(likeButton.src==='images/like.png'){
+            const response = await fetch(`/api/post/like-post`, {
                 method: 'POST',
-            });
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({
+                   commentId,
+                    postId,
+                })
+            });  
+            likeButton.src = 'images/liked.png';
+        }
+        else{
+            const response = await fetch(`/api/post/dislike-post`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({
+                   commentId,
+                    postId,
+                })
+            }); 
+            likeButton.src = 'images/disliked.png';
+        }
+
+        if (response.ok) {
+            loadPosts('public'); // Reload posts to reflect like/dislike change
+           
+        } else {
+            console.error('Failed to toggle like/dislike');
+           
+        }
+    } catch (error) {
+        console.error('Error toggling like/dislike:', error);
+    }
+}
+    // Function to toggle like or dislike
+    async function toggleLikeDislike(postId, likeButton) {
+        try {
+            if(likeButton.src==='images/like.png'){
+                const response = await fetch(`/api/post/like-post`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({
+                       
+                        postId,
+                    })
+                });  
+                likeButton.src = 'images/liked.png';
+            }
+            else{
+                const response = await fetch(`/api/post/dislike-post`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({
+                       
+                        postId,
+                    })
+                }); 
+                likeButton.src = 'images/disliked.png';
+            }
 
             if (response.ok) {
                 loadPosts('public'); // Reload posts to reflect like/dislike change
-                likeButton.src='images/liked.png';
+               
             } else {
                 console.error('Failed to toggle like/dislike');
-                likeButton.src='images/disliked.png';
+               
             }
         } catch (error) {
             console.error('Error toggling like/dislike:', error);
@@ -198,7 +340,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('fileInput');
     const preview = document.getElementById('preview');
     const upload = document.getElementById('uploading');
-    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    const fileNameDisplay = document.getElementById('fileName');
+
     const resetButton = document.getElementById('resetButton');
 
     fileInput.addEventListener('change', function() {
@@ -236,8 +379,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedPrivacy = privacySelect.value;
 
         if (content) {
-            await addPost(content, selectedPrivacy); // Add the post
-            
+            await addPost(content, selectedPrivacy,fileInput); // Add the post
+
         } else {
             alert('Please write something to post.');
         }
