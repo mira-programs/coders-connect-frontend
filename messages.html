@@ -5,28 +5,75 @@
 	<meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+    <link rel="stylesheet" href="messaging.css">
 </head>
 <body>
-         <div class="messaging page">
-            <div class="header"> <!-- for persons profile, name, etc-->
-                
+    <div class="container">
+    <div class="sidebar" >
+        <div class="sidebarThing">
+            <a id="connect" href="mainpage.html">Coders Connect</a>
+        </div>
+        <div class="sidebarThing">
+            <a href="profile.html">
+                <div class="pfp">
+                    <img src="settingsbot.avif" alt="Profile Picture" id="sidebarPfp">
+                </div>
+            </a>
+        </div>
+        <div class="sidebarThing middle">
+            <a href="mainpage.html">Home</a>
+            <a href="friends.html">Friends</a>
+            <a href="messages.html">Messages</a>
+        </div>
+        <div class="sidebarThing settings">
+            <a href="settings.html">Settings</a>
+        </div>
+    </div>
+        <div class="chats"> <!--display chat options-->
+            <div class="singlechat"><!--singlechat-->
+                <div class="pfpwrap">
+                    <img src="settingsbot.avif" class="profile online"/>
+                </div>
+                <p class="username">username</p>
+                <p class="newmesssage">!</p>
             </div>
+
+        </div>
+         <div class="messagingpage">
+            <div class="header"> <!-- for persons profile, name, etc-->
+                <div class="pfpwrap">
+                    <img src="settingsbot.avif" class="profile"/>
+                </div>
+                <p class="username">username</p>
+               
+            </div>
+            
             <div class="displaytexts">
                 <div class="message">
-                    <p>
+                    <p class="theirmessage">
                         messages
                     </p>
-                    <img src="#" alt="images"/>
+                    <p class="mymessage">
+
+                    </p>
+                    <img src="settingsbot.avif" alt="images" class="theirimage"/>
+                    <img src="settingsbot.avif" alt="images" class="myimage"/>
                 </div>
             </div>
 
-            <div> <!-- bottom texting/attaching image/button for sending-->
+            <div class="texting"> <!-- bottom texting/attaching image/button for sending-->
+                <div class="preview">
+                    <img src="settingsbot.avif" class="imagedisplayed"/>
+                    <p id="filename">no contents uploaded</p>
+                </div>
                 <textarea id="textbox">
                     write message here
                 </textarea>
-                <input type="file">
-                <button>
+                <label for="fileinput">
+                    <img src="upload.png" id="upload"/>
+                </label>
+                <input id="fileinput" type="file" >
+                <button id="send">
                     send
                 </button>
                
@@ -39,6 +86,7 @@
 
 
          </div>
+        </div>
 </body>
 
 </html>
