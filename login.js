@@ -141,7 +141,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         if (result.status === "SUCCESS") {
             alert("Login successful!");
             // Store the token in localStorage for use in future requests
-            localStorage.setItem('authToken', result.token);
+            localStorage.setItem('token', result.token);
             // todo, redirect to a protected page / update the UI
         } else {
             alert(result.message);

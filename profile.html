@@ -15,7 +15,7 @@
             <div class="sidebarThing">
                 <a href="#">
                     <div class="pfp">
-                        <img src="profile.jpg" alt="Profile Picture" id="sidebarPfp">
+                        <img src="/images/upload.png" alt="Profile Picture" id="sidebarPfp">
                     </div>
                 </a>
             </div>
@@ -31,14 +31,14 @@
 
         <div class="profile">
             <div class="profileHead">
-                <div class="profilePic">
-                    <img src="profile.jpg" alt="Profile Picture" id="mainPfp">
+                <div id="profileProfilePic" class="profilePic">
+                    <img src="/images/upload.png" alt="Profile Picture" id="mainPfp">
                 </div>
                 <div class="profileAtt">
-                    <h1 class="name">Taylor Swift</h1> <!--Here are name, username, etc etc-->
-                    <p class="username">@taylorswift13</p>
-                    <p class="occupation">Singer/Songwriter/Coder</p>
-                    <p class="bio">She sings in code trust. She also likes cat</p>
+                    <h1 id="profileName" class="name">Taylor Swift</h1> <!--Here are name, username, etc etc-->
+                    <p id="profileUsername" class="username">@taylorswift13</p>
+                    <p id="profileOccupation" class="occupation">Singer/Songwriter/Coder</p>
+                    <p id="profileBio" class="bio">She sings in code trust. She also likes cat</p>
 
                     <button id="editBtn" class="editButton">Edit</button>
                 </div>
@@ -49,7 +49,7 @@
                     <span id="closeEB" class="closeEB">&times;</span>
                     <h2>Edit Profile</h2>
                     <div class="editPfp">
-                        <img src="profile.jpg" alt="Profile Picture" id="profilePicInput" onclick="document.getElementById('fileInput').click();">
+                        <img src="/images/upload.png" alt="Profile Picture" id="profilePicInput" onclick="document.getElementById('fileInput').click();">
                         <input type="file" id="fileInput" accept="image/*">
                     </div>
                     <label for="editName">Name</label>
