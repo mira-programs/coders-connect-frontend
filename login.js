@@ -64,7 +64,8 @@ document.getElementById('backBtn3').addEventListener('click', function(){
     document.querySelector('.welcomeScreen').classList.remove('hidden');
 });
 
-// Signup form submission
+//here
+
 document.getElementById('signupForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
@@ -113,6 +114,7 @@ document.getElementById('signupForm').addEventListener('submit', async function(
         
         if (result.status === "SUCCESS") {
             alert("Signup successful!");
+            window.location.href = "profile.html";
             // Redirect or update the UI as needed
         } else {
             alert(result.message);
@@ -129,6 +131,12 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     
     const email = document.querySelector('#loginForm input[type="email"]').value;
     const password = document.querySelector('#loginForm input[type="password"]').value;
+
+    if (!email || !password) {
+        alert("Please fill in both the email and password fields.");
+        return;
+    }
+
     
     try {
         const response = await fetch('http://localhost:3000/user/login', {
@@ -141,8 +149,9 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         if (result.status === "SUCCESS") {
             alert("Login successful!");
             // Store the token in localStorage for use in future requests
-            localStorage.setItem('token', result.token);
+            localStorage.setItem('authToken', result.token);
             // todo, redirect to a protected page / update the UI
+            window.location.href = "profile.html";
         } else {
             alert(result.message);
         }
@@ -151,4 +160,3 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         alert("An error occurred. Please try again.");
     }
 });
-
