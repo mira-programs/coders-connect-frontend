@@ -1,0 +1,235 @@
+body{
+    font-family: 'Fira Code', monospace;
+    background-color: #1e1e2e;
+    color: #dcdcdc;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    overflow: hidden;
+}
+
+.mainCont{
+    display: flex;
+    width: 100%;
+}
+.sidebar{
+    background-color: #1a1a26; 
+    width: 200px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.sidebarThing{
+    padding: 15px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.sidebarThing a{
+    text-decoration: none;
+    color: #dcdcdc;
+    font-size: 1rem;
+    display: block;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.sidebarThing a#connect{
+    padding: 15px;
+    margin-top: 0px;
+    padding-top: 0px;
+    color: #0078d4;
+}
+.pfp{
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: inline-block;
+    border: 2px solid #3d9dc6;
+}
+
+.pfp img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.sidebarThing a:hover{
+    background-color: #3d9dc6;
+    border-radius: 5px;
+    color: #fff;
+}
+
+.sidebarThing.sets{
+    margin-top: auto;
+}
+
+.settings{
+    flex: 1;
+    padding: 20px;
+    margin-left: 200px;
+}
+
+.settings h2{
+    font-size: 2rem;
+    color: #61dafb;
+    margin-bottom: 40px;
+}
+
+.settings p{
+    font-size: 0.9rem;
+}
+
+.settingCont{
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #2a2a38;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.settingCont:hover {
+    background-color: #3b3b5a;
+}
+
+.settingCont h3{
+    font-size: 1.25rem;
+    margin-bottom: 15px;
+}
+
+.settingCont button{
+    background-color: #61dafb;
+    color: #2a2a38;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s;
+}
+
+.settingCont button:hover {
+    background-color: #4da3e1;
+}
+
+.passBox, .deactBox, .deleteBox{
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.passBoxAtt, .deactBoxAtt, .deleteBoxAtt{
+    background-color: #3b3b5a;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 400px;
+    position: relative;
+}
+
+.passBoxAtt input{
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    background-color: lightgray;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.passBoxAtt label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.saveButton, .yesButton{
+    background-color: #61dafb;
+    color: #2a2a38;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 10px;
+    transition: background 0.3s;
+}
+
+.saveButton:hover, .yesButton:hover{
+    background-color: #4da3e1;
+}
+
+.noButton{
+    background-color: #2a2a38;
+    color: lightgray;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 10px;
+    transition: background 0.3s;
+}
+
+.saveButton:hover, .yesButton:hover{
+    background-color: #4da3e1;
+}
+
+.deactBoxAtt h2, .deleteBoxAtt h2{
+    font-size: 1.25rem;
+}
+
+.closePB, .closeDTB, .closeDB{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+#logoutBtn{
+    background-color: red;
+    color: white;
+}
+
+.noMatch{
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.noMatchAtt{
+    background-color: #3b3b5a;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 400px;
+    position: relative;
+}
+
+.noMatchAtt h2{
+    font-size: 1rem;
+}

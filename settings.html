@@ -1,0 +1,100 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="settings.css">
+    <title id="pageTitle">Settings</title>
+</head>
+
+<body>
+    <div class="mainCont">
+        <div class="sidebar">
+            <div class="sidebarThing">
+                <a id = "connect" href="mainpage.html">Coders Connect</a>
+            </div>
+            <div class="sidebarThing">
+                <a href="profile.html">
+                    <div class="pfp">
+                        <img src="profile.jpg" alt="Profile Picture" id="sidebarPfp">
+                    </div>
+                </a>
+            </div>
+            <div class="sidebarThing middle">
+                <a href="mainpage.html">Home</a>
+                <a href="friends.html">Friends</a>
+                <a href="messages.html">Messages</a>
+            </div>
+            <div class="sidebarThing sets">
+                <a href="#">Settings</a>
+            </div>
+        </div>
+
+        <div class="settings">
+            <h2>Account Settings</h2>
+            <div class="settingCont">
+                <h3>Email:</h3>
+                <p>taylorswift13@gmail.com</p>
+            </div>
+            <div class="settingCont">
+                <h3>Password</h3>
+                <p>imagine forgetting your own password lol</p>
+                <button id="changePassBtn">Change Password</button>
+            </div>
+
+            <div class="settingCont">
+                <h3>Deactivate/Delete Account</h3>
+                <button id="deactAccBtn">Deactivate Account</button>
+                <button id="deleteAccBtn">Delete Account</button>
+            </div>
+
+            <div class="settingCont">
+                <button id="logoutBtn">Log Out</button>
+            </div>
+        </div>
+
+        <div id="passBox" class="passBox">
+            <div class="passBoxAtt">
+                <span id="closePB" class="closePB">&times;</span>
+                <h2>Change Password</h2>
+                <label for="oldPass">Old Password</label>
+                <input id="oldPass" type="password" placeholder="Old Password">
+                
+                <label for="newPass">New Password</label>
+                <input id="newPass" type="password" placeholder="New Password">
+                
+                <label for="confPass">Confirm Password</label>
+                <input id="confPass" type="password" placeholder="Retype New Password">
+                
+                <button id="passBtn" class="saveButton">Confirm</button>
+            </div>
+        </div>
+
+        <div id="noMatch" class="noMatch">
+            <div class="noMatchAtt">
+                <h2>The passwords don't match</h2>  
+                <button id="retry" class="yesButton">Retry</button>
+            </div>
+        </div>
+
+        <div id="deactBox" class="deactBox">
+            <div class="deactBoxAtt">
+                <span id="closeDTB" class="closeDTB">&times;</span>
+                <h2>Are you sure you want to Deactivate your Account?</h2>  
+                <button id="yesDeactBtn" class="yesButton">Yess I'm sure</button>
+                <button id="noDeactBtn" class="noButton">Actually nevermind</button>
+            </div>
+        </div>
+
+        <div id="deleteBox" class="deleteBox">
+            <div class="deleteBoxAtt">
+                <span id="closeDB" class="closeDB">&times;</span>
+                <h2>Are you sure you want to Delete your Account?</h2>  
+                <button id="yesDeleteBtn" class="yesButton">Yess I'm sure</button>
+                <button id="noDeleteBtn" class="noButton">Actually nevermind</button>
+            </div>
+        </div>
+
+    </div>
+    <script src="settings.js"></script>
+</body>
+</html>
