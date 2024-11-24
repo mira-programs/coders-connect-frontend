@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const socket = io("#"); // Update this to match Socket.IO server
     const chatsDiv = document.querySelector(".chats");
     const displayTextsDiv = document.querySelector(".displaytexts");
     const sendButton = document.getElementById("send");
@@ -10,122 +11,137 @@ document.addEventListener("DOMContentLoaded", () => {
     const profileImage = messagingHeader.querySelector(".pfpwrap .profile");
     const usernameDisplay = messagingHeader.querySelector(".username");
 
-    // Fetch chats and populate the sidebar
-    function loadChats() {
-        fetch("https://api.example.com/chats") // Replace with your actual endpoint
-            .then((response) => response.json())
-            .then((chats) => {
-                chatsDiv.innerHTML = ""; // Clear existing chats
-                chats.forEach((chat) => {
-                    const chatDiv = document.createElement("div");
-                    chatDiv.classList.add("singlechat");
-                    chatDiv.dataset.username = chat.username; // Use username as ID
-                    chatDiv.dataset.profilePicture = chat.profilePicture; // Store profile picture for easy access
+    let activeChatUsername = null;
+    let activeChatUserId = null;
 
-                    chatDiv.innerHTML = `
-                        <div class="pfpwrap">
-                            <img src="${chat.profilePicture}" class="profile online"/>
-                        </div>
-                        <p class="username">${chat.username}</p>
-                        <p class="newmesssage">${chat.newMessages ? "!" : ""}</p>
-                    `;
+    // Load sidebar chats
+    async function loadSidebarChats() {
+        try {
+            const response = await fetch("/api/getUsersForSidebar", {
+                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+            });
+            const users = await response.json();
 
-                    // Add event listener for loading messages
-                    chatDiv.addEventListener("click", () => {
-                        updateMessagingPage(chat.username, chat.profilePicture);
-                        loadMessages(chat.username);
-                    });
+            chatsDiv.innerHTML = ""; // Clear existing chats
+            users.forEach((user) => {
+                const chatDiv = document.createElement("div");
+                chatDiv.classList.add("singlechat");
+                chatDiv.dataset.userId = user._id; // Store user ID for chat
+                chatDiv.dataset.username = user.username;
+                chatDiv.dataset.profilePicture = user.profilePicture || "default.png"; // Fallback if no profile picture
 
-                    chatsDiv.appendChild(chatDiv);
+                chatDiv.innerHTML = `
+                    <div class="pfpwrap">
+                        <img src="${user.profilePicture || "default.png"}" class="profile offline"/>
+                    </div>
+                    <p class="username">${user.username}</p>
+                    <p class="newmesssage"></p>
+                `;
+
+                // Add event listener for opening chat
+                chatDiv.addEventListener("click", () => {
+                    updateMessagingHeader(user.username, user.profilePicture);
+                    loadMessages(user._id);
                 });
-            })
-            .catch((error) => console.error("Error loading chats:", error));
+
+                chatsDiv.appendChild(chatDiv);
+            });
+        } catch (error) {
+            console.error("Error loading sidebar chats:", error);
+        }
     }
 
-    // Update the messaging page header with the selected chat details
-    function updateMessagingPage(username, profilePicture) {
-        profileImage.src = profilePicture;
+    // Update the messaging header
+    function updateMessagingHeader(username, profilePicture) {
+        profileImage.src = profilePicture || "default.png";
         usernameDisplay.textContent = username;
+        activeChatUsername = username;
     }
 
-    // Fetch messages for a specific chat
-    function loadMessages(username) {
-        fetch(`https://api.example.com/messages?username=${username}`) // Replace with your actual endpoint
-            .then((response) => response.json())
-            .then((messages) => {
-                displayTextsDiv.innerHTML = ""; // Clear existing messages
-                messages.forEach((message) => {
-                    const messageDiv = document.createElement("div");
-                    messageDiv.classList.add("message");
-                    messageDiv.id = `message-${message.id}`; // Set HTML ID to match message ID from the API
+    // Load messages for a specific user
+    async function loadMessages(userId) {
+        try {
+            activeChatUserId = userId;
+            const response = await fetch(`/api/messages/${userId}`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+            });
+            const messages = await response.json();
 
-                    messageDiv.innerHTML = `
-                        <p class="theirmessage">${message.sender === "them" ? message.content : ""}</p>
-                        <p class="mymessage">${message.sender === "me" ? message.content : ""}</p>
-                        ${message.image ? `<img src="${message.image}" class="${message.sender === "them" ? "theirimage" : "myimage"}"/>` : ""}
-                    `;
+            displayTextsDiv.innerHTML = ""; // Clear previous messages
+            messages.forEach((message) => {
+                addMessageToDisplay(message);
+            });
+        } catch (error) {
+            console.error("Error loading messages:", error);
+        }
+    }
 
-                    displayTextsDiv.appendChild(messageDiv);
-                });
-            })
-            .catch((error) => console.error("Error loading messages:", error));
+    // Add a single message to the display
+    function addMessageToDisplay(message) {
+        const messageDiv = document.createElement("div");
+        const isSender = message.senderId === localStorage.getItem("userId");
+
+        messageDiv.classList.add("message", isSender ? "me" : "them");
+        messageDiv.id = `message-${message._id}`;
+
+        if (message.message) {
+            messageDiv.innerHTML = `
+                <p class="${isSender ? "mymessage" : "theirmessage"}">
+                    ${message.message}
+                </p>`;
+        }
+
+        displayTextsDiv.appendChild(messageDiv);
     }
 
     // Handle sending a message
-    sendButton.addEventListener("click", () => {
+    sendButton.addEventListener("click", async () => {
         const messageContent = textBox.value.trim();
-        const file = fileInput.files[0];
+        if (!messageContent || !activeChatUserId) return;
 
-        if (!messageContent && !file) return;
+        try {
+            const response = await fetch(`/api/messages/send/${activeChatUserId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify({ message: messageContent }),
+            });
+            const newMessage = await response.json();
 
-        const formData = new FormData();
-        formData.append("message", messageContent);
-        if (file) formData.append("file", file);
+            socket.emit("newMessage", newMessage); // Emit new message event
+            addMessageToDisplay(newMessage); // Add message locally
 
-        const activeChatUsername = usernameDisplay.textContent;
-
-        fetch("https://api.example.com/messages", { // Replace with your actual endpoint
-            method: "POST",
-            body: formData,
-        })
-            .then((response) => response.json())
-            .then(() => {
-                textBox.value = "";
-                previewImage.src = "";
-                previewImage.style.display = "none";
-                filenameText.textContent = "no contents uploaded";
-                fileInput.value = "";
-
-                // Reload messages after sending
-                if (activeChatUsername) {
-                    loadMessages(activeChatUsername);
-                }
-            })
-            .catch((error) => console.error("Error sending message:", error));
-    });
-
-    // Handle file input changes
-    fileInput.addEventListener("change", () => {
-        const file = fileInput.files[0];
-        if (file) {
-            if (file.type.startsWith("image/")) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    previewImage.src = reader.result;
-                    previewImage.style.display = "block";
-                    filenameText.textContent = "";
-                };
-                reader.readAsDataURL(file);
-            } else {
-                previewImage.style.display = "none";
-                filenameText.textContent = file.name;
-            }
-        } else {
+            // Clear the input field
+            textBox.value = "";
             previewImage.style.display = "none";
             filenameText.textContent = "no contents uploaded";
+            fileInput.value = "";
+        } catch (error) {
+            console.error("Error sending message:", error);
         }
     });
 
-    // Initial load of chats
-    loadChats();
+    // Listen new message events
+    socket.on("newMessage", (message) => {
+        if (message.receiverId === localStorage.getItem("userId") || message.senderId === activeChatUserId) {
+            addMessageToDisplay(message);
+        }
+    });
+
+    // Listen for chat status updates
+    socket.on("updateChatStatus", (userId, isOnline) => {
+        const chatDiv = [...chatsDiv.children].find(
+            (div) => div.dataset.userId === userId
+        );
+        if (chatDiv) {
+            const profileImg = chatDiv.querySelector(".profile");
+            profileImg.classList.toggle("online", isOnline);
+            profileImg.classList.toggle("offline", !isOnline);
+        }
+    });
+
+    // Initial load
+    loadSidebarChats();
 });
