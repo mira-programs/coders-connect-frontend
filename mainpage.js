@@ -5,30 +5,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const privacySelect = document.createElement('select');
     const exploreSection = document.querySelector('.explore-section');
 
-  
-    async function fetchPosts(filterType) {
 
+    async function fetchPosts(filterType) {
         try {
-            if(filterType==="friends"){
-            const response = await fetch(`/api/post/feed`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            const posts = await response.json();
-            return posts;}
-            else{
-                const response = await fetch(`/api/post`, {
+            if (filterType === "friends") {
+                const response = await fetch(`http://localhost:3000/post/feed`, {
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                     }
                 });
-                const posts = await response.json();
-                return posts;
+                const result = await response.json();
+                return result.data;
             }
-            
+            else {
+                const response = await fetch(`http://localhost:3000/post/feed`, { //REPLACE W PUBLIC
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                const result = await response.json();
+                return result.data;
+            }
+
         } catch (error) {
             console.error('Error fetching posts:', error);
             return [];
@@ -101,16 +101,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 postsContainer.appendChild(postElement);
 
-           
-              
+
+
                 // Event listeners for like and reply buttons in comments
                 const commentLikes = postElement.querySelectorAll('.commentlike');
                 commentLikes.forEach(like => {
                     like.addEventListener('click', () => {
-                        
+
                         const postId = postElement.getAttribute('data-post-id');
                         const commentId = postElement.getAttribute('data-comment-id');
-                        toggleLikeDislikecomment(postId,like,commentId);
+                        toggleLikeDislikecomment(postId, like, commentId);
                     });
                 });
 
@@ -135,18 +135,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 commentButton.addEventListener('click', () => {
                     commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
                 });
-                 //Event listener for likepost
-                 const likeimage = postElement.querySelector('.like-button');
-                 likeimage.addEventListener('click',()=>{
+                //Event listener for likepost
+                const likeimage = postElement.querySelector('.like-button');
+                likeimage.addEventListener('click', () => {
                     const postId = postElement.getAttribute('data-post-id');
-                    toggleLikeDislike(likeimage,postId);
-                 });
-                 //event listener dislike
-                 const dislikeimage = postElement.querySelector('.dislike-button');
-                 likeimage.addEventListener('click',()=>{
+                    toggleLikeDislike(likeimage, postId);
+                });
+                //event listener dislike
+                const dislikeimage = postElement.querySelector('.dislike-button');
+                likeimage.addEventListener('click', () => {
                     const postId = postElement.getAttribute('data-post-id');
-                    toggleLikeDislike(dislikeimage,postId);
-                 });
+                    toggleLikeDislike(dislikeimage, postId);
+                });
 
                 // Event listener for adding a comment
                 const commentTextBox = postElement.querySelector('.commenttextbox');
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 usernames.forEach(username => {
                     username.addEventListener('click', (e) => {
                         const selectedUsername = e.target.textContent;
-                        window.location.href = `profile.html?user=${selectedUsername}`; 
+                        window.location.href = `profile.html?user=${selectedUsername}`;
                     });
                 });
             });
@@ -174,9 +174,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Function to add a new post
-    async function addPost(content, privacy,media) {
+    async function addPost(content, privacy, media) {
         try {
-            const response = await fetch('/api/posts', {
+            const response = await fetch('/api/posts/create', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -198,7 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error posting content:', error);
         }
     }
-
     // Function to add a comment to a post
     async function addComment(postId, text) {
         if (text.trim()) {
@@ -224,7 +223,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-
     // Function to add a reply to a comment
     async function addReply(postId, commentId, text) {
         if (text.trim()) {
@@ -247,89 +245,89 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Failed to add reply');
                 }
             } catch (error) {
-               
+
 
                 console.error('Error adding reply:', error);
             }
         }
     }
- // Function to toggle like or dislike comments
- async function toggleLikeDislikecomment(postId, likeButton,commentId) {
-    try {
-        if(likeButton.src==='images/like.png'){
-            const response = await fetch(`/api/post/like-post`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify({
-                   commentId,
-                    postId,
-                })
-            });  
-            likeButton.src = 'images/liked.png';
-        }
-        else{
-            const response = await fetch(`/api/post/dislike-post`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify({
-                   commentId,
-                    postId,
-                })
-            }); 
-            likeButton.src = 'images/disliked.png';
-        }
-
-        if (response.ok) {
-            loadPosts('public'); // Reload posts to reflect like/dislike change
-           
-        } else {
-            console.error('Failed to toggle like/dislike');
-           
-        }
-    } catch (error) {
-        console.error('Error toggling like/dislike:', error);
-    }
-}
-    // Function to toggle like or dislike
-    async function toggleLikeDislike(postId, likeButton) {
+    // Function to toggle like or dislike comments
+    async function toggleLikeDislikecomment(postId, likeButton, commentId) {
         try {
-            if(likeButton.src==='images/like.png'){
+            if (likeButton.src === 'images/like.png') {
                 const response = await fetch(`/api/post/like-post`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     },
                     body: JSON.stringify({
-                       
+                        commentId,
                         postId,
                     })
-                });  
+                });
                 likeButton.src = 'images/liked.png';
             }
-            else{
+            else {
                 const response = await fetch(`/api/post/dislike-post`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     },
                     body: JSON.stringify({
-                       
+                        commentId,
                         postId,
                     })
-                }); 
+                });
                 likeButton.src = 'images/disliked.png';
             }
 
             if (response.ok) {
                 loadPosts('public'); // Reload posts to reflect like/dislike change
-               
+
             } else {
                 console.error('Failed to toggle like/dislike');
-               
+
+            }
+        } catch (error) {
+            console.error('Error toggling like/dislike:', error);
+        }
+    }
+    // Function to toggle like or dislike
+    async function toggleLikeDislike(postId, likeButton) {
+        try {
+            if (likeButton.src === 'images/like.png') {
+                const response = await fetch(`/api/post/like-post`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({
+
+                        postId,
+                    })
+                });
+                likeButton.src = 'images/liked.png';
+            }
+            else {
+                const response = await fetch(`/api/post/dislike-post`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({
+
+                        postId,
+                    })
+                });
+                likeButton.src = 'images/disliked.png';
+            }
+
+            if (response.ok) {
+                loadPosts('public'); // Reload posts to reflect like/dislike change
+
+            } else {
+                console.error('Failed to toggle like/dislike');
+
             }
         } catch (error) {
             console.error('Error toggling like/dislike:', error);
@@ -344,12 +342,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const resetButton = document.getElementById('resetButton');
 
-    fileInput.addEventListener('change', function() {
+    fileInput.addEventListener('change', function () {
         const file = this.files[0];
-        
+
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 if (file.type.startsWith('image/')) {
                     preview.src = e.target.result;
                     preview.style.display = 'block';
@@ -368,7 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    resetButton.addEventListener('click', function() {
+    resetButton.addEventListener('click', function () {
         fileInput.value = ''; // Clear the file input
         preview.src = 'placeholder-image.png'; // Reset the preview image
         preview.style.display = 'none';
@@ -379,7 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedPrivacy = privacySelect.value;
 
         if (content) {
-            await addPost(content, selectedPrivacy,fileInput); // Add the post
+            await addPost(content, selectedPrivacy, fileInput); // Add the post
 
         } else {
             alert('Please write something to post.');
