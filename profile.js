@@ -119,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const profilePic = document.getElementById('mainPfp');
             if (profilePic) {
                 profilePic.src = profilePicture || "default_profile_pic.jpg"; // Default image if none provided
+                sidebarPfp.src = profilePicture; // Update sidebar profile picture
             }
     
         } catch (error) {
