@@ -74,12 +74,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 likeButton.alt = 'Like';
                 likeButton.classList.add('footerpostspics');
                 postFooter.appendChild(likeButton);
+                const comment = document.createElement('img');
+                comment.src = 'comment.png'; // Placeholder, replace with actual icon/image
+                comment.alt = 'comment';
+                comment.classList.add('footerpostspics');
+                postFooter.appendChild(comment);
 
                 const dislikeButton = document.createElement('img');
                 dislikeButton.src = 'dislike.png'; // Placeholder, replace with actual icon/image
                 dislikeButton.alt = 'Dislike';
                 postFooter.appendChild(dislikeButton);
-
+                dislikeButton.classList.add('footerpostspics');
                 postElement.appendChild(postFooter);
 
                 // Add post to the container
