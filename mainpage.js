@@ -39,140 +39,111 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadPosts(filterType) {
         try {
             const posts = await fetchPosts(filterType);
-            postsContainer.innerHTML = '';
-
+            postsContainer.innerHTML = ''; // Clear previous posts
+    
             posts.forEach(post => {
                 const postElement = document.createElement('div');
                 postElement.classList.add('post');
+    
+                const fullName = `${post.userId.firstName} ${post.userId.lastName}`;
+                const mediaHTML = post.media
+                    ? `<div class="imagesposted"><img src="${post.media}" alt="post image" /></div>`
+                    : '';
+                const commentsHTML = post.comments.length > 0
+                    ? post.comments.map(comment => `
+                        <div class="commentwrap" data-comment-id="${comment._id}">
+                            <div class="commentpfp">
+                                <img src="${comment.userProfilePic}" alt="profile" />
+                            </div>
+                            <div class="commentcontent">
+                                <p class="commentusername">${comment.username}</p>
+                                <p class="contentcomment">${comment.text}</p>
+                                <div class="likes">
+                                    <img class="commentlike" src="images/like.png" alt="like" />
+                                    <p class="likes-count">${comment.likes.length}</p>
+                                    <img class="replytocomments" src="images/comment.png" alt="reply" />
+                                </div>
+                                <div class="sharereply" style="display: none;">
+                                    <textarea class="replytextbox" rows="2" cols="50" placeholder="Reply!"></textarea>
+                                    <button class="rbutton">Reply!</button>
+                                </div>
+                                <div class="replies">
+                                    ${comment.replies.map(reply => `
+                                        <div class="replywrap">
+                                            <p class="replyusername">${reply.username}</p>
+                                            <p class="replycontent">${reply.text}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')
+                    : '<p>No comments yet.</p>';
+    
                 postElement.innerHTML = `
-                    <div class="post-header" data-post-id="${post._id}"> <!-- Highlighted change: added data-post-id attribute -->
+                    <div class="post-header" data-post-id="${post._id}">
                         <div class="post-pfp">
-                            <img src="${post.userProfilePic}" alt="profile" />
+                            <img src="images/settingsbot.avif" alt="profile" />
                         </div>
                         <div class="post-content">
-                            <p class="username clickable">${post.username}</p> <!-- Highlighted change: added 'clickable' class for event listener -->
+                            <p>${fullName}</p>
                             <p>${post.content}</p>
-                            ${post.media ? `<div class="imagesposted"><img src="${post.media}" alt="post media" /></div>` : ''}
+                            ${mediaHTML}
                             <div class="post-footer">
-                                <img class="footerpostspics like-button" src="images/like.png" alt="like" /> 
-                                <p>${post.likes.length}</p>
+                                <img class="footerpostspics like-button" src="images/like.png" alt="like" />
+                                <p class="likes-count">${post.likes.length}</p>
                                 <img class="footerpostspics dislike-button" src="images/dislike.png" alt="dislike" />
-                                <p>${post.dislikes.length}</p>
+                                <p class="likes-count">${post.dislikes.length}</p>
                                 <img class="footerpostspics comment-button" src="images/comment.png" alt="comment" />
                                 <p class="optionsposts">...</p>
                             </div>
                             <div class="commentssection" style="display: none;">
-                             <div class="sharecomment" >
-                                            <textarea class="commenttextbox" rows="2" cols="50" placeholder="comment!"></textarea>
-                                            <button class="cbutton">comment!</button>
-                                        </div>
-                                ${post.comments.map(comment => `
-
-                                    <div class="commentwrap" data-comment-id="${comment._id}">
-                                        <div class="commentpfp">
-                                            <img src="${comment.userProfilePic}" alt="profile" />
-                                        </div>
-                                        <div class="commentcontent">
-                                            <p class="commentusername clickable">${comment.username}</p> <!-- Highlighted change: added 'clickable' class for event listener -->
-                                            <p class="contentcomment">${comment.text}</p>
-                                            <div class="likes">
-                                                <img class="commentlike" src="images/like.png" alt="like" /> 
-                                                <p class="likes-count">${comment.likes.length}</p>
-                                                <img class="replytocomments" src="images/comment.png" alt="reply" /> <!-- Highlighted change: added event listener for reply -->
-                                            </div>
-                                            <div class="sharereply" style="display: none;">
-                                                <textarea class="replytextbox" rows="2" cols="50" placeholder="Reply!"></textarea>
-                                                <button class="rbutton">Reply!</button>
-                                            </div>
-                                            <div class="replies">
-                                                ${comment.replies.map(reply => `
-                                                    <div class="replywrap">
-                                                        <p class="replyusername clickable">${reply.username}</p> <!-- Highlighted change: added 'clickable' class for event listener -->
-                                                        <p class="replycontent">${reply.text}</p>
-                                                    </div>
-                                                `).join('')}
-                                            </div>
-                                        </div>
-                                    </div>
-                                `).join('')}
+                                <div class="sharecomment">
+                                    <textarea class="commenttextbox" rows="2" cols="50" placeholder="comment!"></textarea>
+                                    <button class="cbutton">Comment!</button>
+                                </div>
+                                ${commentsHTML}
                             </div>
                         </div>
                     </div>
                 `;
+    
                 postsContainer.appendChild(postElement);
-
-
-
-                // Event listeners for like and reply buttons in comments
-                const commentLikes = postElement.querySelectorAll('.commentlike');
-                commentLikes.forEach(like => {
-                    like.addEventListener('click', () => {
-
-                        const postId = postElement.getAttribute('data-post-id');
-                        const commentId = postElement.getAttribute('data-comment-id');
-                        toggleLikeDislikecomment(postId, like, commentId);
-                    });
-                });
-
-                const replyButtons = postElement.querySelectorAll('.replytocomments');
-                replyButtons.forEach(replyBtn => {
-                    const replyBox = replyBtn.closest('.commentcontent').querySelector('.sharereply');
-                    replyBtn.addEventListener('click', () => {
-                        replyBox.style.display = replyBox.style.display === 'none' ? 'block' : 'none';
-                    });
-                    // Event listener for adding a reply
-                    const replyButton = replyBox.querySelector('.rbutton');
-                    replyButton.addEventListener('click', () => {
-                        const postId = postElement.getAttribute('data-post-id');
-                        const commentId = replyBtn.closest('.commentwrap').getAttribute('data-comment-id');
-                        const replyText = replyBox.querySelector('.replytextbox').value;
-                        addReply(postId, commentId, replyText);
-                    });
-                });
-                // Toggle comments section visibility
+    
+                // Add event listeners for the interactive features
                 const commentButton = postElement.querySelector('.comment-button');
                 const commentsSection = postElement.querySelector('.commentssection');
                 commentButton.addEventListener('click', () => {
                     commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
                 });
-                //Event listener for likepost
-                const likeimage = postElement.querySelector('.like-button');
-                likeimage.addEventListener('click', () => {
+    
+                const likeButton = postElement.querySelector('.like-button');
+                likeButton.addEventListener('click', () => {
                     const postId = postElement.getAttribute('data-post-id');
-                    toggleLikeDislike(likeimage, postId);
+                    toggleLikeDislike(likeButton, postId);
                 });
-                //event listener dislike
-                const dislikeimage = postElement.querySelector('.dislike-button');
-                likeimage.addEventListener('click', () => {
+    
+                const dislikeButton = postElement.querySelector('.dislike-button');
+                dislikeButton.addEventListener('click', () => {
                     const postId = postElement.getAttribute('data-post-id');
-                    toggleLikeDislike(dislikeimage, postId);
+                    toggleLikeDislike(dislikeButton, postId);
                 });
-
-                // Event listener for adding a comment
-                const commentTextBox = postElement.querySelector('.commenttextbox');
+    
                 const commentSubmitButton = postElement.querySelector('.cbutton');
                 if (commentSubmitButton) {
                     commentSubmitButton.addEventListener('click', () => {
                         const postId = postElement.getAttribute('data-post-id');
+                        const commentTextBox = postElement.querySelector('.commenttextbox');
                         const commentText = commentTextBox.value;
                         addComment(postId, commentText);
                     });
                 }
-
-                // Event listener for username clicks
-                const usernames = postElement.querySelectorAll('.clickable');
-                usernames.forEach(username => {
-                    username.addEventListener('click', (e) => {
-                        const selectedUsername = e.target.textContent;
-                        window.location.href = `profile.html?user=${selectedUsername}`;
-                    });
-                });
             });
         } catch (error) {
             console.error('Error loading posts:', error);
         }
     }
-
+    
     // Function to add a new post
     async function addPost(content, privacy, media) {
         try {
