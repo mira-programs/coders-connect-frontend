@@ -228,9 +228,30 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error fetching profile or posts:', error);
         }
     };
+    function openPostModal(postElement) {
+        const imageSrc = postElement.querySelector('img').src;
+        const postText = postElement.querySelector('.postContent p').textContent;
+        document.getElementById('modalPostImage').src = imageSrc;
+        document.getElementById('modalPostText').value = postText;
+        document.getElementById('postModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden'; 
+    }
 
-        // Call the function
-        fetchUserProfile();
-        loadMyPosts();
+    function closePostModal() {
+        document.getElementById('postModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    function savePost() {
+        const updatedText = document.getElementById('modalPostText').value;
+        const modalPostImage = document.getElementById('modalPostImage');
+
+        alert('Post saved with new caption: ' + updatedText);
+        closePostModal();
+    }
+
+    // Call the function
+    fetchUserProfile();
+    //loadMyPosts();
 });
 
