@@ -1,10 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const postsContainer = document.querySelector('.posts');
-    const postTextBox = document.getElementById('posttextbox');
-    const postButton = document.querySelector('.buttons');
-    const privacySelect = document.createElement('select');
     const exploreSection = document.querySelector('.explore-section');
-
 
     async function fetchPosts(filterType) {
         try {
@@ -19,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return result.data;
             }
             else {
-                const response = await fetch(`http://localhost:3000/post/explore`, { 
+                const response = await fetch(`http://localhost:3000/post/explore`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -40,11 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const posts = await fetchPosts(filterType);
             postsContainer.innerHTML = ''; // Clear previous posts
-    
+
             posts.forEach(post => {
                 const postElement = document.createElement('div');
                 postElement.classList.add('post');
-    
+
                 const fullName = `${post.userId.firstName} ${post.userId.lastName}`;
                 const mediaHTML = post.media
                     ? `<div class="imagesposted"><img src="${post.media}" alt="post image" /></div>`
@@ -79,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     `).join('')
                     : '<p>No comments yet.</p>';
-    
+
                 postElement.innerHTML = `
                     <div class="post-header" data-post-id="${post._id}">
                         <div class="post-pfp">
@@ -107,28 +103,28 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </div>
                 `;
-    
+
                 postsContainer.appendChild(postElement);
-    
+
                 // Add event listeners for the interactive features
                 const commentButton = postElement.querySelector('.comment-button');
                 const commentsSection = postElement.querySelector('.commentssection');
                 commentButton.addEventListener('click', () => {
                     commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
                 });
-    
+
                 const likeButton = postElement.querySelector('.like-button');
                 likeButton.addEventListener('click', () => {
                     const postId = postElement.getAttribute('data-post-id');
                     toggleLikeDislike(likeButton, postId);
                 });
-    
+
                 const dislikeButton = postElement.querySelector('.dislike-button');
                 dislikeButton.addEventListener('click', () => {
                     const postId = postElement.getAttribute('data-post-id');
                     toggleLikeDislike(dislikeButton, postId);
                 });
-    
+
                 const commentSubmitButton = postElement.querySelector('.cbutton');
                 if (commentSubmitButton) {
                     commentSubmitButton.addEventListener('click', () => {
@@ -143,32 +139,85 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error loading posts:', error);
         }
     }
-    
-    // Function to add a new post
-    async function addPost(content, privacy, media) {
-        try {
-            const response = await fetch('/api/posts/create', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify({
-                    content,
-                    privacy,
-                    media,
-                }),
-            });
 
-            if (response.ok) {
-                postTextBox.value = ''; // Clear the input
-                loadPosts('public'); // Reload posts
+    const fileInput = document.getElementById('fileInput');
+    const preview = document.getElementById('preview');
+    const upload = document.getElementById('uploading');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    const privacySelect = document.getElementById('privacySelect');
+    const postTextBox = document.getElementById('posttextbox');
+    const postButton = document.querySelector('.buttons');
+    const resetButton = document.getElementById('resetButton');
+    { //things for the post preview reset etc
+        fileInput.addEventListener('change', function () { //for previewing the image uploaded for the post
+            const file = this.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    if (file.type.startsWith('image/')) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                        fileNameDisplay.textContent = ''; // Clear file name if it is an image
+                    } else {
+                        preview.src = 'placeholder-image.png'; // Reset to placeholder if not an image
+                        preview.style.display = 'none';
+                        fileNameDisplay.textContent = file.name; // Display file name
+                    }
+                }
+                reader.readAsDataURL(file);
             } else {
-                console.error('Failed to post');
+                preview.src = 'placeholder-image.png'; // Reset to placeholder
+                preview.style.display = 'none';
+                fileNameDisplay.textContent = '';
             }
-        } catch (error) {
-            console.error('Error posting content:', error);
-        }
+        });
+
+        resetButton.addEventListener('click', function () {
+            fileInput.value = ''; // Clear the file input
+            preview.src = 'placeholder-image.png'; // Reset the preview image
+            preview.style.display = 'none';
+            fileNameDisplay.textContent = ''; // Reset file name display
+        });
     }
+    //creating a new post
+    postButton.addEventListener('click', async () => {
+        const newPostContent = postTextBox.value.trim();
+        const newPostPrivacy = privacySelect.value;
+        const newPostMedia = fileInput.files[0];
+
+        if (newPostContent) {
+            const formData = new FormData();
+            formData.append('content', newPostContent);
+            formData.append('privacy', newPostPrivacy);
+            if (newPostMedia) {
+                formData.append('media', newPostMedia);
+            }
+            try {
+                const response = await fetch('http://localhost:3000/post/create', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    },
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    postTextBox.value = ''; // Clear the input
+                    loadPosts('public'); // Reload posts
+                } else {
+                    console.error('Failed to post');
+                }
+            } catch (error) {
+                console.error('Error posting content:', error);
+            }
+
+        } else {
+            alert('Please write something to post.');
+        }
+    });
+
+
     // Function to add a comment to a post
     async function addComment(postId, text) {
         if (text.trim()) {
@@ -304,56 +353,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error toggling like/dislike:', error);
         }
     }
-
-    // Event listener for the Post button
-    const fileInput = document.getElementById('fileInput');
-    const preview = document.getElementById('preview');
-    const upload = document.getElementById('uploading');
-    const fileNameDisplay = document.getElementById('fileName');
-
-    const resetButton = document.getElementById('resetButton');
-
-    fileInput.addEventListener('change', function () {
-        const file = this.files[0];
-
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                if (file.type.startsWith('image/')) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                    fileNameDisplay.textContent = ''; // Clear file name if it is an image
-                } else {
-                    preview.src = 'placeholder-image.png'; // Reset to placeholder if not an image
-                    preview.style.display = 'none';
-                    fileNameDisplay.textContent = file.name; // Display file name
-                }
-            }
-            reader.readAsDataURL(file);
-        } else {
-            preview.src = 'placeholder-image.png'; // Reset to placeholder
-            preview.style.display = 'none';
-            fileNameDisplay.textContent = '';
-        }
-    });
-
-    resetButton.addEventListener('click', function () {
-        fileInput.value = ''; // Clear the file input
-        preview.src = 'placeholder-image.png'; // Reset the preview image
-        preview.style.display = 'none';
-        fileNameDisplay.textContent = ''; // Reset file name display
-    });
-    postButton.addEventListener('click', async () => {
-        const content = postTextBox.value.trim();
-        const selectedPrivacy = privacySelect.value;
-
-        if (content) {
-            await addPost(content, selectedPrivacy, fileInput); // Add the post
-
-        } else {
-            alert('Please write something to post.');
-        }
-    });
 
     // Event listener for explore section (clicking on 'Explore' or 'Friends')
     exploreSection.addEventListener('click', (event) => {
