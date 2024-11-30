@@ -236,7 +236,7 @@ body{
 
 /* Modal background */
 .postModal {
-    /*display: none;  unhide when you dont wanna see it fr*/
+    display: none;  
     position: fixed;
     z-index: 1000;
     left: 0;

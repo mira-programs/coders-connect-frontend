@@ -104,6 +104,20 @@
                     <!-- image -->
                     <div class="post">
                         <img src="bg4.jpg" alt="Post 5">
+                        <img class="media" src="bg4.jpg" alt="Post 5">
+                    </div>
+                </div>
+            </div>
+
+            <div class="postModal" id="postModal">
+                <div class="modalContent">
+                    <span class="closeModal" onclick="closePostModal()">&times;</span>
+                    <div class="modalPostContent">
+                        <img id="modalPostImage" src="" alt="post pic">
+                        <textarea id="modalPostText" placeholder="Edit your caption..."></textarea>
+                        <button class="savePostBtn" onclick="savePost()">Save</button>
+                        <button class="likeBtn">Like</button>
+                        <button class="commentBtn">Comment</button>
                     </div>
                 </div>
             </div>
