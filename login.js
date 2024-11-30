@@ -114,7 +114,7 @@ document.getElementById('signupForm').addEventListener('submit', async function(
         
         if (result.status === "SUCCESS") {
             alert("Signup successful!");
-            window.location.href = "profile.html";
+            window.location.href = "login.html";
             // Redirect or update the UI as needed
         } else {
             alert(result.message);

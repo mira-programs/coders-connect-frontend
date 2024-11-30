@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to add a new post
     async function addPost(content, privacy, media) {
         try {
-            const response = await fetch('/api/posts/create', {
+            const response = await fetch('http://localhost:3000/post/create', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
