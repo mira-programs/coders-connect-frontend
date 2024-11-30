@@ -6,8 +6,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const friendRequestsContainer = document.querySelector(".reqCont");
 
     const API_BASE = "http://localhost:5000/api/friendship"; // Update with your server's base API URL
-
-    // Fetch function helper
+    searchBar.value = ""; // Clear the search bar text
+    function clearAll() {
+        searchBar.value = ""; // Clear search bar
+        searchResults.innerHTML = ""; // Clear search results
+        topContributorsContainer.innerHTML = "<h1>🏆Top Contributors🏆</h1>"; // Reset top contributors
+        mostActiveFriendContainer.innerHTML = ""; // Clear most active friend
+        friendRequestsContainer.innerHTML = "<h1>Friend Requests</h1>"; // Reset friend requests
+    }
+    //clearAll(); uncomment when connected
     async function fetchData(endpoint, options = {}) {
         try {
             const response = await fetch(`${API_BASE}${endpoint}`, {
