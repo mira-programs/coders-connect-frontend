@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return result.data;
             }
             else {
-                const response = await fetch(`http://localhost:3000/post/feed`, { //REPLACE W PUBLIC
+                const response = await fetch(`http://localhost:3000/post/explore`, { 
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('authToken')}`
