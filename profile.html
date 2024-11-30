@@ -15,7 +15,7 @@
             <div class="sidebarThing">
                 <a href="#">
                     <div class="pfp">
-                        <img src="profile.jpg" alt="Profile Picture" id="sidebarPfp">
+                        <img src="/images/upload.png" alt="Profile Picture" id="sidebarPfp">
                     </div>
                 </a>
             </div>
@@ -24,21 +24,22 @@
                 <a href="friends.html">Friends</a>
                 <a href="messages.html">Messages</a>
             </div>
-            <div class="sidebarThing sets">
+            <div class="sidebarThing settings">
                 <a href="settings.html">Settings</a>
             </div>
         </div>
 
         <div class="profile">
             <div class="profileHead">
-                <div class="profilePic">
-                    <img src="profile.jpg" alt="Profile Picture" id="mainPfp">
+                <div id="profileProfilePic" class="profilePic">
+                    <img src="/images/upload.png" alt="Profile Picture" id="mainPfp">
                 </div>
                 <div class="profileAtt">
-                    <h1 class="name">Taylor Swift</h1> <!--Here are name, username, etc etc-->
-                    <p class="username">@taylorswift13</p>
-                    <p class="occupation">Singer/Songwriter/Coder</p>
-                    <p class="bio">She sings in code trust. She also likes cat</p>
+                    <h1 id="profileFirstName" class="name">Taylor</h1>
+                    <h1 id="profileLastName" class="name">Swift</h1>
+                    <p id="profileUsername" class="username">@taylorswift13</p>
+                    <p id="profileOccupation" class="occupation">Singer/Songwriter/Coder</p>
+                    <p id="profileBio" class="bio">She sings in code trust. She also likes cat</p>
 
                     <button id="editBtn" class="editButton">Edit</button>
                 </div>
@@ -49,11 +50,15 @@
                     <span id="closeEB" class="closeEB">&times;</span>
                     <h2>Edit Profile</h2>
                     <div class="editPfp">
-                        <img src="profile.jpg" alt="Profile Picture" id="profilePicInput" onclick="document.getElementById('fileInput').click();">
+                        <img src="/images/upload.png" alt="Profile Picture" id="profilePicInput" onclick="document.getElementById('fileInput').click();">
                         <input type="file" id="fileInput" accept="image/*">
                     </div>
-                    <label for="editName">Name</label>
-                    <input id="editName" type="text" placeholder="Edit Name">
+
+                    <label for="editFirstName">First Name</label>
+                    <input id="editFirstName" type="text" placeholder="Edit First Name">
+
+                    <label for="editLastName">Last Name</label>
+                    <input id="editLastName" type="text" placeholder="Edit Last Name">
                     
                     <label for="editBio">Bio</label>
                     <textarea id="editBio" placeholder="Edit Bio"></textarea>
@@ -81,37 +86,24 @@
                     <!-- posts here i added them in js -->
                      <!--text-->
                     <div class="post">
-                        <p class="content">me when Im posting</p>
+                        <p>me when Im posting</p>
                     </div>
                     <!--image-->
                     <div class="post">
-                        <img class="media" src="bg1.jpg" alt="Post 2">
+                        <img src="bg1.jpg" alt="Post 2">
                     </div>
                     <!--text image-->
                     <div class="post">
-                        <p class="content">Check out my latest project!</p>
-                        <img class="media" src="bg2.jpg" alt="Post 3">
+                        <p>Check out my latest project!</p>
+                        <img src="bg2.jpg" alt="Post 3">
                     </div>
                     <!--text-->
                     <div class="post">
-                        <p class="content">idek its lirly just a post</p>
+                        <p>idek its lirly just a post</p>
                     </div>
                     <!-- image -->
                     <div class="post">
-                        <img class="media" src="bg4.jpg" alt="Post 5">
-                    </div>
-                </div>
-            </div>
-
-            <div class="postModal" id="postModal">
-                <div class="modalContent">
-                    <span class="closeModal" onclick="closePostModal()">&times;</span>
-                    <div class="modalPostContent">
-                        <img id="modalPostImage" src="" alt="post pic">
-                        <textarea id="modalPostText" placeholder="Edit your caption..."></textarea>
-                        <button class="savePostBtn" onclick="savePost()">Save</button>
-                        <button class="likeBtn">Like</button>
-                        <button class="commentBtn">Comment</button>
+                        <img src="bg4.jpg" alt="Post 5">
                     </div>
                 </div>
             </div>
@@ -119,29 +111,6 @@
         </div>
     </div>
     <script src="profile.js"></script>
-    <script>
-        function openPostModal(postElement) {
-            const imageSrc = postElement.querySelector('img').src;
-            const postText = postElement.querySelector('.postContent p').textContent;
-            document.getElementById('modalPostImage').src = imageSrc;
-            document.getElementById('modalPostText').value = postText;
-            document.getElementById('postModal').style.display = 'flex';
-            document.body.style.overflow = 'hidden'; 
-        }
-
-        function closePostModal() {
-            document.getElementById('postModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
-        function savePost() {
-            const updatedText = document.getElementById('modalPostText').value;
-            const modalPostImage = document.getElementById('modalPostImage');
-
-            alert('Post saved with new caption: ' + updatedText);
-            closePostModal();
-        }
-    </script>
 </body>
 
 </html>
