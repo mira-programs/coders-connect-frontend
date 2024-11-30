@@ -1,10 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const searchResults = document.getElementById("searchResults");
+    const searchResults = document.getElementsById("searchResults");
+    const suggested = document.getElementById("suggested")
     const searchBar = document.querySelector(".searchBar");
     const topContributorsContainer = document.querySelector(".maxPost");
     const mostActiveFriendContainer = document.querySelector(".maxFriend .actFriend");
     const friendRequestsContainer = document.querySelector(".reqCont");
-
+   
+    
     const API_BASE = "http://localhost:5000/api/friendship"; // Update with your server's base API URL
     searchBar.value = ""; // Clear the search bar text
     function clearAll() {
@@ -14,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mostActiveFriendContainer.innerHTML = ""; // Clear most active friend
         friendRequestsContainer.innerHTML = "<h1>Friend Requests</h1>"; // Reset friend requests
     }
-    //clearAll(); uncomment when connected
+    clearAll(); 
     async function fetchData(endpoint, options = {}) {
         try {
             const response = await fetch(`${API_BASE}${endpoint}`, {
@@ -102,7 +104,18 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     }
+    function dsiplaysuggested(users) {
+        suggested.innerHTML = ""; // Clear previous results
+        users.forEach((user) => {
+            const suggest = createFriendElement(user, "suggProf");
+            suggest.appendChild(searchItem);
 
+            // Add click event to navigate to profile
+            searchItem.addEventListener("click", () => {
+                window.location.href = `profile.html?userId=${user._id}`;
+            });
+        });
+    }
     // Fetch and display top contributors
     async function fetchTopContributors() {
         const contributors = await fetchData("/top-contributor");
@@ -164,4 +177,6 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchTopContributors();
     fetchMostActiveFriend();
     fetchFriendRequests();
+    dsiplaysuggested();
+
 });
