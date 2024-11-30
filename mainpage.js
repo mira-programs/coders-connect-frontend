@@ -38,116 +38,66 @@ document.addEventListener('DOMContentLoaded', () => {
             postsContainer.innerHTML = ''; // Clear previous posts
 
             posts.forEach(post => {
+                // Create post element
                 const postElement = document.createElement('div');
                 postElement.classList.add('post');
+                // Post header (user info)
+                const postHeader = document.createElement('div');
+                postHeader.classList.add('post-header');
 
-                const fullName = `${post.userId.firstName} ${post.userId.lastName}`;
-                const mediaHTML = post.media
-                    ? `<div class="imagesposted"><img src="${post.media}" alt="post image" /></div>`
-                    : '';
-                const commentsHTML = post.comments.length > 0
-                    ? post.comments.map(comment => `
-                        <div class="commentwrap" data-comment-id="${comment._id}">
-                            <div class="commentpfp">
-                                <img src="${comment.userProfilePic}" alt="profile" />
-                            </div>
-                            <div class="commentcontent">
-                                <p class="commentusername">${comment.username}</p>
-                                <p class="contentcomment">${comment.text}</p>
-                                <div class="likes">
-                                    <img class="commentlike" src="images/like.png" alt="like" />
-                                    <p class="likes-count">${comment.likes.length}</p>
-                                    <img class="replytocomments" src="images/comment.png" alt="reply" />
-                                </div>
-                                <div class="sharereply" style="display: none;">
-                                    <textarea class="replytextbox" rows="2" cols="50" placeholder="Reply!"></textarea>
-                                    <button class="rbutton">Reply!</button>
-                                </div>
-                                <div class="replies">
-                                    ${comment.replies.map(reply => `
-                                        <div class="replywrap">
-                                            <p class="replyusername">${reply.username}</p>
-                                            <p class="replycontent">${reply.text}</p>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>
-                    `).join('')
-                    : '<p>No comments yet.</p>';
+                const postPfp = document.createElement('img');
+                postPfp.src = post.userId.profilePicture; // Assuming profile picture URL
+                postPfp.alt = 'Profile Picture';
+                postHeader.appendChild(postPfp);
 
-                postElement.innerHTML = `
-                    <div class="post-header" data-post-id="${post._id}">
-                        <div class="post-pfp">
-                            <img src="images/settingsbot.avif" alt="profile" />
-                        </div>
-                        <div class="post-content">
-                            <p>${fullName}</p>
-                            <p>${post.content}</p>
-                            ${mediaHTML}
-                            <div class="post-footer">
-                                <img class="footerpostspics like-button" src="images/like.png" alt="like" />
-                                <p class="likes-count">${post.likes.length}</p>
-                                <img class="footerpostspics dislike-button" src="images/dislike.png" alt="dislike" />
-                                <p class="likes-count">${post.dislikes.length}</p>
-                                <img class="footerpostspics comment-button" src="images/comment.png" alt="comment" />
-                                <p class="optionsposts">...</p>
-                            </div>
-                            <div class="commentssection" style="display: none;">
-                                <div class="sharecomment">
-                                    <textarea class="commenttextbox" rows="2" cols="50" placeholder="comment!"></textarea>
-                                    <button class="cbutton">Comment!</button>
-                                </div>
-                                ${commentsHTML}
-                            </div>
-                        </div>
-                    </div>
-                `;
+                const postContent = document.createElement('div');
+                postContent.classList.add('post-content');
+                postContent.innerHTML = `<p>${post.userId.username}</p><p>${post.content}</p>`;
+                postHeader.appendChild(postContent);
 
-                postsContainer.appendChild(postElement);
+                postElement.appendChild(postHeader);
 
-                // Add event listeners for the interactive features
-                const commentButton = postElement.querySelector('.comment-button');
-                const commentsSection = postElement.querySelector('.commentssection');
-                commentButton.addEventListener('click', () => {
-                    commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
-                });
-
-                const likeButton = postElement.querySelector('.like-button');
-                likeButton.addEventListener('click', () => {
-                    const postId = postElement.getAttribute('data-post-id');
-                    toggleLikeDislike(likeButton, postId);
-                });
-
-                const dislikeButton = postElement.querySelector('.dislike-button');
-                dislikeButton.addEventListener('click', () => {
-                    const postId = postElement.getAttribute('data-post-id');
-                    toggleLikeDislike(dislikeButton, postId);
-                });
-
-                const commentSubmitButton = postElement.querySelector('.cbutton');
-                if (commentSubmitButton) {
-                    commentSubmitButton.addEventListener('click', () => {
-                        const postId = postElement.getAttribute('data-post-id');
-                        const commentTextBox = postElement.querySelector('.commenttextbox');
-                        const commentText = commentTextBox.value;
-                        addComment(postId, commentText);
-                    });
+                // Post media (if available)
+                if (post.media) {
+                    const media = document.createElement('img');
+                    media.src = post.media; // Assuming media is an image URL
+                    media.alt = 'Post Image';
+                    postElement.appendChild(media);
                 }
+
+                // Post footer (likes/dislikes)
+                const postFooter = document.createElement('div');
+                postFooter.classList.add('post-footer');
+
+                const likeButton = document.createElement('img');
+                likeButton.src = 'like.png'; // Placeholder, replace with actual icon/image
+                likeButton.alt = 'Like';
+                postFooter.appendChild(likeButton);
+
+                const dislikeButton = document.createElement('img');
+                dislikeButton.src = 'dislike.png'; // Placeholder, replace with actual icon/image
+                dislikeButton.alt = 'Dislike';
+                postFooter.appendChild(dislikeButton);
+
+                postElement.appendChild(postFooter);
+
+                // Add post to the container
+                postsContainer.appendChild(postElement);
             });
         } catch (error) {
             console.error('Error loading posts:', error);
         }
     }
-
-    const fileInput = document.getElementById('fileInput');
-    const preview = document.getElementById('preview');
-    const upload = document.getElementById('uploading');
-    const fileNameDisplay = document.getElementById('fileNameDisplay');
-    const privacySelect = document.getElementById('privacySelect');
-    const postTextBox = document.getElementById('posttextbox');
-    const postButton = document.querySelector('.buttons');
-    const resetButton = document.getElementById('resetButton');
+    {//pack of consts
+        const fileInput = document.getElementById('fileInput');
+        const preview = document.getElementById('preview');
+        const upload = document.getElementById('uploading');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const privacySelect = document.getElementById('privacySelect');
+        const postTextBox = document.getElementById('posttextbox');
+        const postButton = document.querySelector('.buttons');
+        const resetButton = document.getElementById('resetButton');
+    }
     { //things for the post preview reset etc
         fileInput.addEventListener('change', function () { //for previewing the image uploaded for the post
             const file = this.files[0];
@@ -216,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Please write something to post.');
         }
     });
-
 
     // Function to add a comment to a post
     async function addComment(postId, text) {
