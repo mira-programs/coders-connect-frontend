@@ -35,7 +35,8 @@
                     <img src="/images/upload.png" alt="Profile Picture" id="mainPfp">
                 </div>
                 <div class="profileAtt">
-                    <h1 id="profileName" class="name">Taylor Swift</h1> <!--Here are name, username, etc etc-->
+                    <h1 id="profileFirstName" class="name">Taylor</h1>
+                    <h1 id="profileLastName" class="name">Swift</h1>
                     <p id="profileUsername" class="username">@taylorswift13</p>
                     <p id="profileOccupation" class="occupation">Singer/Songwriter/Coder</p>
                     <p id="profileBio" class="bio">She sings in code trust. She also likes cat</p>
@@ -52,8 +53,12 @@
                         <img src="/images/upload.png" alt="Profile Picture" id="profilePicInput" onclick="document.getElementById('fileInput').click();">
                         <input type="file" id="fileInput" accept="image/*">
                     </div>
-                    <label for="editName">Name</label>
-                    <input id="editName" type="text" placeholder="Edit Name">
+
+                    <label for="editFirstName">First Name</label>
+                    <input id="editFirstName" type="text" placeholder="Edit First Name">
+
+                    <label for="editLastName">Last Name</label>
+                    <input id="editLastName" type="text" placeholder="Edit Last Name">
                     
                     <label for="editBio">Bio</label>
                     <textarea id="editBio" placeholder="Edit Bio"></textarea>
