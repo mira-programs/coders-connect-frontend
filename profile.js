@@ -197,29 +197,30 @@ document.addEventListener('DOMContentLoaded', () => {
             const posts = postsData.data;
 
             // Render the posts dynamically in the postGrid
-            const postGrid = document.getElementById('postGrid');
-            postGrid.innerHTML = ''; // Clear the existing content
-
-            posts.forEach(post => {
+            const postGrid = document.querySelector('.postGrid');
+            data.posts.forEach(post => {
                 const postElement = document.createElement('div');
                 postElement.classList.add('post');
-
-                // Create post content (you can customize this layout)
-                postElement.innerHTML = `
-                <div class="postHeader">
-                    <span class="postUser">${post.userId.name}</span>
-                    <span class="postDate">${new Date(post.createdAt).toLocaleDateString()}</span>
-                </div>
-                <div class="postContent">
-                    <p>${post.content}</p>
-                </div>
-                <div class="postActions">
-                    <button class="likeBtn">Like</button>
-                    <button class="commentBtn">Comment</button>
-                </div>
-            `;
-
-                // Append the post to the grid
+                if (post.type === 'text') {
+                    const textContent = document.createElement('p');
+                    textContent.textContent = post.content;
+                    postElement.appendChild(textContent);
+                }
+                else if (post.type === 'image') {
+                    const imageContent = document.createElement('img');
+                    imageContent.src = post.content;
+                    imageContent.alt = `Post ${post.id}`;
+                    postElement.appendChild(imageContent);
+                }
+                else if (post.type === 'text_and_image') {
+                    const textContent = document.createElement('p');
+                    textContent.textContent = post.content.text;
+                    const imageContent = document.createElement('img');
+                    imageContent.src = post.content.imageUrl;
+                    imageContent.alt = `Post ${post.id}`;
+                    postElement.appendChild(textContent);
+                    postElement.appendChild(imageContent);
+                }
                 postGrid.appendChild(postElement);
             });
 
