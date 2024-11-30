@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const likeButton = document.createElement('img');
                 likeButton.src = 'like.png'; // Placeholder, replace with actual icon/image
                 likeButton.alt = 'Like';
+                likeButton.classList.add('footerpostspics');
                 postFooter.appendChild(likeButton);
 
                 const dislikeButton = document.createElement('img');
