@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lastName.textContent = newLastName;
         bioFr.textContent = newBio;
         occupationFr.textContent = newOccupation;
-       
+
         // Update Name (Only send new values if they exist)
         if (newFirstName || newLastName) {
             await fetch('http://localhost:3000/account/update-name', {
@@ -172,7 +172,63 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Call the function
-    fetchUserProfile();
+    // Get the logged-in user's profile data and posts
+    async function loadMyPosts() {
+        // Replace this with actual token or get the logged-in user from your session
+
+        // Get the token from localStorage
+        const token = localStorage.getItem('authToken');
+        try {
+            // Fetch user's posts using the /user-posts API
+            const postsResponse = await fetch('http://localhost:3000/post/user-posts', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+                //body: JSON.stringify({ userId: userId }),  
+            });
+
+            if (!postsResponse.ok) {
+                throw new Error('Failed to fetch posts');
+            }
+
+            const postsData = await postsResponse.json();
+            const posts = postsData.data;
+
+            // Render the posts dynamically in the postGrid
+            const postGrid = document.getElementById('postGrid');
+            postGrid.innerHTML = ''; // Clear the existing content
+
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.classList.add('post');
+
+                // Create post content (you can customize this layout)
+                postElement.innerHTML = `
+                <div class="postHeader">
+                    <span class="postUser">${post.userId.name}</span>
+                    <span class="postDate">${new Date(post.createdAt).toLocaleDateString()}</span>
+                </div>
+                <div class="postContent">
+                    <p>${post.content}</p>
+                </div>
+                <div class="postActions">
+                    <button class="likeBtn">Like</button>
+                    <button class="commentBtn">Comment</button>
+                </div>
+            `;
+
+                // Append the post to the grid
+                postGrid.appendChild(postElement);
+            });
+
+        } catch (error) {
+            console.error('Error fetching profile or posts:', error);
+        }
+    };
+
+        // Call the function
+        fetchUserProfile();
+        loadMyPosts();
 });
 
