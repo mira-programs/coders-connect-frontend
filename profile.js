@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const { profile } = data; // Destructure to get the profile object
 
             // Access individual profile properties
-            const { username, firstName, lastName, email, bio, occupation, profilePicture, post_count } = profile;
+            const { username, firstName, lastName, email, bio, occupation, profilePicture, post_count, friend_count } = profile;
 
             // Populate the HTML elements with the data
             document.getElementById('profileFirstName').innerText = `${firstName}`;
@@ -159,6 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('profileBio').innerText = bio;
             document.getElementById('profileOccupation').innerText = occupation;
             document.getElementById('numPosts').innerText = post_count || 0; // Update post count
+            document.getElementById('numFriends').innerText = friend_count || 0;
 
             // Update profile picture
             const profilePic = document.getElementById('mainPfp');

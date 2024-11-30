@@ -139,68 +139,21 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error loading posts:', error);
         }
     }
-
-    const fileInput = document.getElementById('fileInput');
-    const preview = document.getElementById('preview');
-    const upload = document.getElementById('uploading');
-    const fileNameDisplay = document.getElementById('fileNameDisplay');
-    const privacySelect = document.getElementById('privacySelect');
-    const postTextBox = document.getElementById('posttextbox');
-    const postButton = document.querySelector('.buttons');
-    const resetButton = document.getElementById('resetButton');
-    { //things for the post preview reset etc
-        fileInput.addEventListener('change', function () { //for previewing the image uploaded for the post
-            const file = this.files[0];
-
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    if (file.type.startsWith('image/')) {
-                        preview.src = e.target.result;
-                        preview.style.display = 'block';
-                        fileNameDisplay.textContent = ''; // Clear file name if it is an image
-                    } else {
-                        preview.src = 'placeholder-image.png'; // Reset to placeholder if not an image
-                        preview.style.display = 'none';
-                        fileNameDisplay.textContent = file.name; // Display file name
-                    }
-                }
-                reader.readAsDataURL(file);
-            } else {
-                preview.src = 'placeholder-image.png'; // Reset to placeholder
-                preview.style.display = 'none';
-                fileNameDisplay.textContent = '';
-            }
-        });
-
-        resetButton.addEventListener('click', function () {
-            fileInput.value = ''; // Clear the file input
-            preview.src = 'placeholder-image.png'; // Reset the preview image
-            preview.style.display = 'none';
-            fileNameDisplay.textContent = ''; // Reset file name display
-        });
-    }
-    //creating a new post
-    postButton.addEventListener('click', async () => {
-        const newPostContent = postTextBox.value.trim();
-        const newPostPrivacy = privacySelect.value;
-        const newPostMedia = fileInput.files[0];
-
-        if (newPostContent) {
-            const formData = new FormData();
-            formData.append('content', newPostContent);
-            formData.append('privacy', newPostPrivacy);
-            if (newPostMedia) {
-                formData.append('media', newPostMedia);
-            }
-            try {
-                const response = await fetch('http://localhost:3000/post/create', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                    },
-                    body: formData,
-                });
+    
+    // Function to add a new post
+    async function addPost(content, privacy, media) {
+        try {
+            const response = await fetch('/api/posts/create', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({
+                    content,
+                    privacy,
+                    media,
+                }),
+            });
 
                 if (response.ok) {
                     postTextBox.value = ''; // Clear the input
