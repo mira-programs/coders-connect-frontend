@@ -236,9 +236,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function toggleLikeDislike(postId, button) {
-        const action = button.src.includes('like.png') ? 'like-post' : 'dislike-post';
         try {
-            await fetch(`http://localhost:3000/post/${action}`, {
+            // Check current state based on the image source
+            const isLiked = button.src.includes('liked.png');
+            const isDisliked = button.src.includes('disliked.png');
+            const postFooter = button.closest('.post-footer');
+    
+            let action = '';
+            let oppositeButton = null;
+    
+            if (isLiked || isDisliked) {
+                // If already liked/disliked, the action is to remove the reaction
+                action = isLiked ? 'remove-like' : 'remove-dislike';
+            } else {
+                // If not liked/disliked, the action depends on the clicked button
+                action = button.alt === 'Like' ? 'like-post' : 'dislike-post';
+                oppositeButton = button.alt === 'Like'
+                    ? postFooter.querySelector('img[alt="Dislike"]')
+                    : postFooter.querySelector('img[alt="Like"]');
+            }
+    
+            // Send API request for the determined action
+            const response = await fetch(`http://localhost:3000/post/${action}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
@@ -246,14 +265,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({ postId })
             });
-            loadPosts('public');
+    
+            if (response.ok) {
+                // Update the image states based on the new action
+                if (action === 'like-post') {
+                    button.src = 'liked.png';
+                    if (oppositeButton) oppositeButton.src = 'dislike.png';
+                } else if (action === 'dislike-post') {
+                    button.src = 'disliked.png';
+                    if (oppositeButton) oppositeButton.src = 'like.png';
+                } else {
+                    // Remove like or dislike
+                    button.src = button.alt === 'Like' ? 'like.png' : 'dislike.png';
+                }
+            } else {
+                console.error('Failed to toggle like/dislike');
+            }
         } catch (error) {
             console.error('Error toggling like/dislike:', error);
         }
     }
+    
 
     loadPosts('public');
-});
+
 fileInput.addEventListener('change', () => {
     const file = fileInput.files[0];
     if (file && file.type.startsWith('image/')) {
@@ -374,3 +409,4 @@ postButton.addEventListener('click', async () => {
 
     loadPosts('public'); // Load initial posts
 
+});
