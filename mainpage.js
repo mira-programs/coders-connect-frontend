@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error loading posts:', error);
         }
     }
-    {//pack of consts
+    //pack of consts
         const fileInput = document.getElementById('fileInput');
         const preview = document.getElementById('preview');
         const upload = document.getElementById('uploading');
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const postTextBox = document.getElementById('posttextbox');
         const postButton = document.querySelector('.buttons');
         const resetButton = document.getElementById('resetButton');
-    }
+    
     { //things for the post preview reset etc
         fileInput.addEventListener('change', function () { //for previewing the image uploaded for the post
             const file = this.files[0];
