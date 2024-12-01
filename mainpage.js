@@ -1,36 +1,66 @@
 document.addEventListener('DOMContentLoaded', () => {
     const postsContainer = document.querySelector('.posts');
     const exploreSection = document.querySelector('.explore-section');
+    const fileInput = document.getElementById('fileInput');
+    const preview = document.getElementById('preview');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    const privacySelect = document.getElementById('privacySelect');
+    const postTextBox = document.getElementById('posttextbox');
+    const postButton = document.getElementById('postButton');
+    const resetButton = document.getElementById('resetButton');
 
     async function fetchPosts(filterType) {
         try {
-            if (filterType === "friends") {
-                const response = await fetch(`http://localhost:3000/post/feed`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                    }
-                });
-                const result = await response.json();
-                return result.data;
-            }
-            else {
-                const response = await fetch(`http://localhost:3000/post/explore`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                    }
-                });
-                const result = await response.json();
-                return result.data;
-            }
-
+            const endpoint = filterType === "friends" ? "feed" : "explore";
+            const response = await fetch(`http://localhost:3000/post/${endpoint}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                }
+            });
+            const result = await response.json();
+            return result.data;
         } catch (error) {
             console.error('Error fetching posts:', error);
             return [];
         }
     }
-
+    postButton.addEventListener('click', async () => {
+        const newPostContent = postTextBox.value.trim();
+        const newPostPrivacy = privacySelect.value;
+        const newPostMedia = fileInput.files[0];
+    
+        if (newPostContent) {
+            const formData = new FormData();
+            formData.append('content', newPostContent);
+            formData.append('privacy', newPostPrivacy);
+            if (newPostMedia) {
+                formData.append('media', newPostMedia);
+            }
+            try {
+                const response = await fetch('http://localhost:3000/post/create', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    },
+                    body: formData,
+                });
+                if (response.ok) {
+                    postTextBox.value = '';
+                    preview.src = '';
+                    preview.style.display = 'none';
+                    loadPosts('public'); // Reload posts
+                } else {
+                    console.error('Failed to post');
+                }
+            } catch (error) {
+                console.error('Error posting content:', error);
+            }
+        } else {
+            alert('Please write something to post.');
+        }
+    });
+    
     // Function to load posts
     async function loadPosts(filterType) {
         try {
@@ -101,275 +131,185 @@ document.addEventListener('DOMContentLoaded', () => {
                 commentButton.classList.add('footerpostspics');
                 postFooter.appendChild(commentButton);
 
-                postElement.appendChild(postFooter);
+               
 
                 // Display comments section
                 commentButton.addEventListener('click', () => {
-                    const commentsSection = document.createElement('div');
-                    commentsSection.classList.add('comments-section');
-
-                    const commentsHTML = post.comments.map(comment => `
-                        <div class="comment-wrap" data-comment-id="${comment._id}">
-                            <div class="comment-pfp">
-                                <img src="${comment.userProfilePic}" alt="profile" />
-                            </div>
-                            <div class="comment-content">
-                                <p class="comment-username">${comment.username}</p>
-                                <p class="comment-text">${comment.text}</p>
-                                <div class="comment-footer">
-                                    <img src="like.png" alt="like" class="comment-like" />
-                                    <p class="likes-count">${comment.likes.length}</p>
-                                    <img src="reply.png" alt="reply" class="comment-reply" />
-                                </div>
-                            </div>
-                        </div>
-                    `).join('');
-
-                    commentsSection.innerHTML = `
-                        <textarea class="comment-textbox" rows="2" cols="50" placeholder="Write a comment..."></textarea>
-                        <button class="comment-submit">Comment</button>
-                        ${commentsHTML}
-                    `;
-
-                    postElement.appendChild(commentsSection);
-
-                    const submitCommentButton = commentsSection.querySelector('.comment-submit');
-                    submitCommentButton.addEventListener('click', () => {
-                        const commentText = commentsSection.querySelector('.comment-textbox').value;
-                        addComment(post._id, commentText);
-                    });
-
-                    // Add event listeners for liking comments
-                    const commentLikeButtons = commentsSection.querySelectorAll('.comment-like');
-                    commentLikeButtons.forEach(likeButton => {
-                        likeButton.addEventListener('click', (event) => {
-                            const commentWrap = event.target.closest('.comment-wrap');
-                            const commentId = commentWrap.dataset.commentId;
-                            toggleCommentLike(commentId, likeButton);
-                        });
-                    });
+                    if (!postElement.querySelector('.comments-section')) {
+                        const commentsSection = createCommentsSection(post);
+                        postElement.appendChild(commentsSection);
+                    }
                 });
 
+                postElement.appendChild(postFooter);
                 postsContainer.appendChild(postElement);
             });
         } catch (error) {
             console.error('Error loading posts:', error);
         }
     }
-    //pack of consts
-    const fileInput = document.getElementById('fileInput');
-    const preview = document.getElementById('preview');
-    const upload = document.getElementById('uploading');
-    const fileNameDisplay = document.getElementById('fileNameDisplay');
-    const privacySelect = document.getElementById('privacySelect');
-    const postTextBox = document.getElementById('posttextbox');
-    const postButton = document.querySelector('.buttons');
-    const resetButton = document.getElementById('resetButton');
 
-    //things for the post preview reset etc
-    fileInput.addEventListener('change', function () { //for previewing the image uploaded for the post
-        const file = this.files[0];
+    function createCommentsSection(post) {
+        const commentsSection = document.createElement('div');
+        commentsSection.classList.add('commentssection');
 
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                if (file.type.startsWith('image/')) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                    fileNameDisplay.textContent = ''; // Clear file name if it is an image
-                } else {
-                    preview.src = 'placeholder-image.png'; // Reset to placeholder if not an image
-                    preview.style.display = 'none';
-                    fileNameDisplay.textContent = file.name; // Display file name
-                }
-            }
-            reader.readAsDataURL(file);
-        } else {
-            preview.src = 'placeholder-image.png'; // Reset to placeholder
-            preview.style.display = 'none';
-            fileNameDisplay.textContent = '';
-        }
-    });
+        const commentsHTML = post.comments.map(comment => `
+            <div class="commentwrap" data-comment-id="${comment._id}">
+                <div class="commentpfp">
+                    <img src="${comment.userProfilePic}" alt="profile" />
+                </div>
+                <div class="commentcontent">
+                    <p class="commentusername">${comment.username}</p>
+                    <p class="contentcomment">${comment.text}</p>
+                    <div class="likes">
+                        <img src="images/like.png" alt="like" class="commentlike" />
+                        <p class="likes-count">${comment.likes.length}</p>
+                        <img src="images/comment.png" alt="reply" class="replytocomments" />
+                    </div>
+                    <div class="sharereply">
+                        <textarea class="replytextbox" rows="2" cols="50" placeholder="Reply!"></textarea>
+                        <button class="rbutton">Reply!</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
 
-    resetButton.addEventListener('click', function () {
-        fileInput.value = ''; // Clear the file input
-        preview.src = 'placeholder-image.png'; // Reset the preview image
-        preview.style.display = 'none';
-        fileNameDisplay.textContent = ''; // Reset file name display
-    });
+        commentsSection.innerHTML = `
+            <textarea class="commenttextbox" rows="2" cols="50" placeholder="comment!"></textarea>
+            <button class="cbutton">Comment!</button>
+            ${commentsHTML}
+        `;
 
-    //creating a new post
-    postButton.addEventListener('click', async () => {
-        const newPostContent = postTextBox.value.trim();
-        const newPostPrivacy = privacySelect.value;
-        const newPostMedia = fileInput.files[0];
+        const submitCommentButton = commentsSection.querySelector('.cbutton');
+        submitCommentButton.addEventListener('click', () => {
+            const commentText = commentsSection.querySelector('.commenttextbox').value;
+            addComment(post._id, commentText);
+        });
 
-        if (newPostContent) {
-            const formData = new FormData();
-            formData.append('content', newPostContent);
-            formData.append('privacy', newPostPrivacy);
-            if (newPostMedia) {
-                formData.append('media', newPostMedia);
-            }
-            try {
-                const response = await fetch('http://localhost:3000/post/create', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                    },
-                    body: formData,
-                });
+        const replyButtons = commentsSection.querySelectorAll('.rbutton');
+        replyButtons.forEach(replyButton => {
+            replyButton.addEventListener('click', (event) => {
+                const commentWrap = event.target.closest('.commentwrap');
+                const commentId = commentWrap.dataset.commentId;
+                const replyText = commentWrap.querySelector('.replytextbox').value;
+                addReply(post._id, commentId, replyText);
+            });
+        });
 
-                if (response.ok) {
-                    postTextBox.value = ''; // Clear the input
-                    loadPosts('public'); // Reload posts
-                } else {
-                    console.error('Failed to post');
-                }
-            } catch (error) {
-                console.error('Error posting content:', error);
-            }
+        return commentsSection;
+    }
 
-        } else {
-            alert('Please write something to post.');
-        }
-    });
-
-    // Function to add a comment to a post
     async function addComment(postId, text) {
-        if (text.trim()) {
-            try {
-                const response = await fetch(`http://localhost:3000/post/comment-post`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                    },
-                    body: JSON.stringify({
-                        text,
-                        postId,
-                    }),
-                });
-
-                if (response.ok) {
-                    loadPosts('public'); // Reload posts to include new comment
-                } else {
-                    console.error('Failed to add comment');
-                }
-            } catch (error) {
-                console.error('Error adding comment:', error);
+        try {
+            const response = await fetch(`http://localhost:3000/post/comment-post`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ postId, text })
+            });
+            if (response.ok) {
+                loadPosts('public');
             }
+        } catch (error) {
+            console.error('Error adding comment:', error);
         }
     }
-    // Function to add a reply to a comment
+
     async function addReply(postId, commentId, text) {
-        if (text.trim()) {
-            try {
-                const response = await fetch(`http://localhost:3000/post/comment-reply`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                    },
-                    body: JSON.stringify({
-                        text,
-                        commentId,
-                        postId,
-                    })
-                });
-
-                if (response.ok) {
-                    loadPosts('public'); // Reload posts to include new reply
-                } else {
-                    console.error('Failed to add reply');
-                }
-            } catch (error) {
-
-
-                console.error('Error adding reply:', error);
+        try {
+            const response = await fetch(`http://localhost:3000/post/comment-reply`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ postId, commentId, text })
+            });
+            if (response.ok) {
+                loadPosts('public');
             }
+        } catch (error) {
+            console.error('Error adding reply:', error);
         }
     }
-    // Function to toggle like or dislike comments
-    async function toggleLikeDislikecomment(postId, likeButton, commentId) {
+
+    async function toggleLikeDislike(postId, button) {
+        const action = button.src.includes('like.png') ? 'like-post' : 'dislike-post';
         try {
-            if (likeButton.src === 'images/like.png') {
-                const response = await fetch(`http://localhost:3000/post/like-post`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                    },
-                    body: JSON.stringify({
-                        commentId,
-                        postId,
-                    })
-                });
-                likeButton.src = 'images/liked.png';
-            }
-            else {
-                const response = await fetch(`http://localhost:3000/post/dislike-post`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                    },
-                    body: JSON.stringify({
-                        commentId,
-                        postId,
-                    })
-                });
-                likeButton.src = 'images/disliked.png';
-            }
-
-            if (response.ok) {
-                loadPosts('public'); // Reload posts to reflect like/dislike change
-
-            } else {
-                console.error('Failed to toggle like/dislike');
-
-            }
+            await fetch(`http://localhost:3000/post/${action}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ postId })
+            });
+            loadPosts('public');
         } catch (error) {
             console.error('Error toggling like/dislike:', error);
         }
     }
-    // Function to toggle like or dislike
-    async function toggleLikeDislike(postId, likeButton) {
+
+    loadPosts('public');
+});
+fileInput.addEventListener('change', () => {
+    const file = fileInput.files[0];
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.style.display = 'none';
+    }
+});
+resetButton.addEventListener('click', () => {
+    fileInput.value = '';
+    preview.src = '';
+    preview.style.display = 'none';
+    postTextBox.value = '';
+});
+
+postButton.addEventListener('click', async () => {
+    const newPostContent = postTextBox.value.trim();
+    const newPostPrivacy = privacySelect.value;
+    const newPostMedia = fileInput.files[0];
+
+    if (newPostContent) {
+        const formData = new FormData();
+        formData.append('content', newPostContent);
+        formData.append('privacy', newPostPrivacy);
+        if (newPostMedia) {
+            formData.append('media', newPostMedia);
+        }
         try {
-            if (likeButton.src === 'images/like.png') {
-                const response = await fetch(`http://localhost:3000/post/like-post`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                    },
-                    body: JSON.stringify({
-
-                        postId,
-                    })
-                });
-                likeButton.src = 'images/liked.png';
-            }
-            else {
-                const response = await fetch(`http://localhost:3000/post/dislike-post`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                    },
-                    body: JSON.stringify({
-
-                        postId,
-                    })
-                });
-                likeButton.src = 'images/disliked.png';
-            }
-
+            const response = await fetch('http://localhost:3000/post/create', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                },
+                body: formData,
+            });
             if (response.ok) {
-                loadPosts('public'); // Reload posts to reflect like/dislike change
-
+                postTextBox.value = '';
+                preview.src = '';
+                preview.style.display = 'none';
+                loadPosts('public'); // Reload posts
             } else {
-                console.error('Failed to toggle like/dislike');
-
+                console.error('Failed to post');
             }
         } catch (error) {
-            console.error('Error toggling like/dislike:', error);
+            console.error('Error posting content:', error);
         }
+    } else {
+        alert('Please write something to post.');
     }
+});
+
 
     // Event listener for explore section (clicking on 'Explore' or 'Friends')
     exploreSection.addEventListener('click', (event) => {
@@ -433,4 +373,4 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSideBarPfp();
 
     loadPosts('public'); // Load initial posts
-});
+
