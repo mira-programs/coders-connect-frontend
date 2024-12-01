@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const socket = io("#"); // Update this to match Socket.IO server
+    const socket = io("https://cdn.socket.io/4.5.1/socket.io.min.js"); // Update this to match Socket.IO server
     const chatsDiv = document.querySelector(".chats");
     const displayTextsDiv = document.querySelector(".displaytexts");
     const sendButton = document.getElementById("send");
