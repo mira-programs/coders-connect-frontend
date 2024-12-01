@@ -141,7 +141,54 @@ document.addEventListener("DOMContentLoaded", () => {
             profileImg.classList.toggle("offline", !isOnline);
         }
     });
+    async function loadSideBarPfp () {
+        try {
+          const response = await fetch(
+            "http://localhost:3000/account/profile",
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem(
+                  "authToken"
+                )}`,
+              },
+            }
+          );
 
+          if (!response.ok) {
+            throw new Error(`Error: ${response.statusText}`);
+          }
+
+          const data = await response.json(); // Parse JSON from the response
+
+          if (data.message) {
+            console.log(data.message); // Log the success message
+          }
+
+          const { profile } = data; // Destructure to get the profile object
+
+          // Access individual profile properties
+          const {
+            username,
+            firstName,
+            lastName,
+            email,
+            bio,
+            occupation,
+            profilePicture,
+            post_count,
+            friend_count,
+          } = profile;
+
+          if (profilePic) {
+            document.getElementById("sidebarPfp").src = profilePicture;
+          }
+        } catch (error) {
+          console.error("Error fetching profile info:", error);
+        }
+      };
+      loadSideBarPfp();
+      
     // Initial load
     loadSidebarChats();
 });
