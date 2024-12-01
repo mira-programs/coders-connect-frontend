@@ -36,58 +36,120 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const posts = await fetchPosts(filterType);
             postsContainer.innerHTML = ''; // Clear previous posts
-
+    
             posts.forEach(post => {
                 // Create post element
                 const postElement = document.createElement('div');
                 postElement.classList.add('post');
+    
                 // Post header (user info)
                 const postHeader = document.createElement('div');
                 postHeader.classList.add('post-header');
-
                 const postPfp = document.createElement('img');
-                postPfp.src = post.userId.profilePicture; // Assuming profile picture URL
+                postPfp.src = post.userId.profilePicture || 'default-pfp.png';
                 postPfp.alt = 'Profile Picture';
                 postHeader.appendChild(postPfp);
-
+    
                 const postContent = document.createElement('div');
                 postContent.classList.add('post-content');
                 postContent.innerHTML = `<p>${post.userId.username}</p><p>${post.content}</p>`;
                 postHeader.appendChild(postContent);
-
+    
                 postElement.appendChild(postHeader);
-
+    
                 // Post media (if available)
                 if (post.media) {
                     const media = document.createElement('img');
-                    media.src = post.media; // Assuming media is an image URL
-                    media.alt = 'Post Image';
+                    media.src = post.media;
+                    media.alt = 'Post Media';
                     postElement.appendChild(media);
                 }
-
-                // Post footer (likes/dislikes)
+    
+                // Post footer (likes/dislikes/comments)
                 const postFooter = document.createElement('div');
                 postFooter.classList.add('post-footer');
-
+    
                 const likeButton = document.createElement('img');
-                likeButton.src = 'like.png'; // Placeholder, replace with actual icon/image
+                likeButton.src = 'like.png';
                 likeButton.alt = 'Like';
                 likeButton.classList.add('footerpostspics');
                 postFooter.appendChild(likeButton);
-                const comment = document.createElement('img');
-                comment.src = 'comment.png'; // Placeholder, replace with actual icon/image
-                comment.alt = 'comment';
-                comment.classList.add('footerpostspics');
-                postFooter.appendChild(comment);
-
+    
+                const likeCount = document.createElement('p');
+                likeCount.textContent = post.likes.length;
+                likeCount.classList.add('likes-count');
+                postFooter.appendChild(likeCount);
+    
+                likeButton.addEventListener('click', () => toggleLikeDislike(post._id, likeButton));
+    
                 const dislikeButton = document.createElement('img');
-                dislikeButton.src = 'dislike.png'; // Placeholder, replace with actual icon/image
+                dislikeButton.src = 'dislike.png';
                 dislikeButton.alt = 'Dislike';
-                postFooter.appendChild(dislikeButton);
                 dislikeButton.classList.add('footerpostspics');
+                postFooter.appendChild(dislikeButton);
+    
+                const dislikeCount = document.createElement('p');
+                dislikeCount.textContent = post.dislikes.length;
+                dislikeCount.classList.add('likes-count');
+                postFooter.appendChild(dislikeCount);
+    
+                dislikeButton.addEventListener('click', () => toggleLikeDislike(post._id, dislikeButton));
+    
+                const commentButton = document.createElement('img');
+                commentButton.src = 'comment.png';
+                commentButton.alt = 'Comment';
+                commentButton.classList.add('footerpostspics');
+                postFooter.appendChild(commentButton);
+    
                 postElement.appendChild(postFooter);
-
-                // Add post to the container
+    
+                // Display comments section
+                commentButton.addEventListener('click', () => {
+                    const commentsSection = document.createElement('div');
+                    commentsSection.classList.add('comments-section');
+    
+                    const commentsHTML = post.comments.map(comment => `
+                        <div class="comment-wrap" data-comment-id="${comment._id}">
+                            <div class="comment-pfp">
+                                <img src="${comment.userProfilePic}" alt="profile" />
+                            </div>
+                            <div class="comment-content">
+                                <p class="comment-username">${comment.username}</p>
+                                <p class="comment-text">${comment.text}</p>
+                                <div class="comment-footer">
+                                    <img src="like.png" alt="like" class="comment-like" />
+                                    <p class="likes-count">${comment.likes.length}</p>
+                                    <img src="reply.png" alt="reply" class="comment-reply" />
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+    
+                    commentsSection.innerHTML = `
+                        <textarea class="comment-textbox" rows="2" cols="50" placeholder="Write a comment..."></textarea>
+                        <button class="comment-submit">Comment</button>
+                        ${commentsHTML}
+                    `;
+    
+                    postElement.appendChild(commentsSection);
+    
+                    const submitCommentButton = commentsSection.querySelector('.comment-submit');
+                    submitCommentButton.addEventListener('click', () => {
+                        const commentText = commentsSection.querySelector('.comment-textbox').value;
+                        addComment(post._id, commentText);
+                    });
+    
+                    // Add event listeners for liking comments
+                    const commentLikeButtons = commentsSection.querySelectorAll('.comment-like');
+                    commentLikeButtons.forEach(likeButton => {
+                        likeButton.addEventListener('click', (event) => {
+                            const commentWrap = event.target.closest('.comment-wrap');
+                            const commentId = commentWrap.dataset.commentId;
+                            toggleCommentLike(commentId, likeButton);
+                        });
+                    });
+                });
+    
                 postsContainer.appendChild(postElement);
             });
         } catch (error) {
@@ -177,10 +239,10 @@ document.addEventListener('DOMContentLoaded', () => {
     async function addComment(postId, text) {
         if (text.trim()) {
             try {
-                const response = await fetch(`/api/post/comment-post`, {
+                const response = await fetch(`http://localhost:3000/post/comment-post`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                     },
                     body: JSON.stringify({
                         text,
@@ -202,10 +264,10 @@ document.addEventListener('DOMContentLoaded', () => {
     async function addReply(postId, commentId, text) {
         if (text.trim()) {
             try {
-                const response = await fetch(`/api/post/comment-reply`, {
+                const response = await fetch(`http://localhost:3000/post/comment-reply`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                     },
                     body: JSON.stringify({
                         text,
@@ -230,10 +292,10 @@ document.addEventListener('DOMContentLoaded', () => {
     async function toggleLikeDislikecomment(postId, likeButton, commentId) {
         try {
             if (likeButton.src === 'images/like.png') {
-                const response = await fetch(`/api/post/like-post`, {
+                const response = await fetch(`http://localhost:3000/post/like-post`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                     },
                     body: JSON.stringify({
                         commentId,
@@ -243,10 +305,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 likeButton.src = 'images/liked.png';
             }
             else {
-                const response = await fetch(`/api/post/dislike-post`, {
+                const response = await fetch(`http://localhost:3000/post/dislike-post`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                     },
                     body: JSON.stringify({
                         commentId,
@@ -271,10 +333,10 @@ document.addEventListener('DOMContentLoaded', () => {
     async function toggleLikeDislike(postId, likeButton) {
         try {
             if (likeButton.src === 'images/like.png') {
-                const response = await fetch(`/api/post/like-post`, {
+                const response = await fetch(`http://localhost:3000/post/like-post`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                     },
                     body: JSON.stringify({
 
@@ -284,10 +346,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 likeButton.src = 'images/liked.png';
             }
             else {
-                const response = await fetch(`/api/post/dislike-post`, {
+                const response = await fetch(`http://localhost:3000/post/dislike-post`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                     },
                     body: JSON.stringify({
 
