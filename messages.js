@@ -17,8 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Load sidebar chats
     async function loadSidebarChats() {
         try {
-            const response = await fetch("/api/getUsersForSidebar", {
-                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+            const response = await fetch("http://localhost:3000/message/getUsersForSidebar", {
+                headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
             });
             const users = await response.json();
 
@@ -62,8 +62,8 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadMessages(userId) {
         try {
             activeChatUserId = userId;
-            const response = await fetch(`/api/messages/${userId}`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+            const response = await fetch(`http://localhost:3000/message/messages/${userId}`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
             });
             const messages = await response.json();
 
@@ -100,11 +100,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!messageContent || !activeChatUserId) return;
 
         try {
-            const response = await fetch(`/api/messages/send/${activeChatUserId}`, {
+            const response = await fetch(`http://localhost:3000/message/messages/send/${activeChatUserId}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    Authorization: `Bearer ${localStorage.getItem("authToken")}`,
                 },
                 body: JSON.stringify({ message: messageContent }),
             });
