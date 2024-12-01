@@ -1,202 +1,253 @@
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="friends.css">
-     
-    <title id="pageTitle">Friends</title>
-    <script src="friends.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="friends.css" />
+
+  <title id="pageTitle">Friends</title>
+  <script src="friends.js"></script>
 </head>
 
 <body>
-    <div class="mainCont">
-        <div class="sidebar">
-            <div class="sidebarThing">
-                <a id="connect" href="mainpage.html">Coders Connect</a>
-            </div>
-            <div class="sidebarThing">
-                <a href="profile.html">
-                    <div class="pfp">
-                        <img src="profile.jpg" alt="Profile Picture" id="sidebarPfp">
-                    </div>
-                </a>
-            </div>
-            <div class="sidebarThing middle">
-                <a href="mainpage.html">Home</a>
-                <a href="#">Friends</a>
-                <a href="messages.html">Messages</a>
-            </div>
-            <div class="sidebarThing sets">
-                <a href="settings.html">Settings</a>
-            </div>
-        </div>
+  <div class="mainCont">
+    <div class="sidebar">
+      <div class="sidebarThing">
+        <a id="connect" href="mainpage.html">Coders Connect</a>
+      </div>
+      <div class="sidebarThing">
+        <a href="profile.html">
+          <div class="pfp">
+            <img src="profile.jpg" alt="Profile Picture" id="sidebarPfp" />
+          </div>
+        </a>
+        <!-- Script to fetch profile picture -->
+        <script>
+          document.addEventListener("DOMContentLoaded", async function () {
+            try {
+              const response = await fetch(
+                "http://localhost:3000/account/profile",
+                {
+                  method: "GET",
+                  headers: {
+                    Authorization: `Bearer ${localStorage.getItem(
+                      "authToken"
+                    )}`,
+                  },
+                }
+              );
 
-        <div class="content">
-            <div class="searchCont">
-                <input type="text" class="searchBar" placeholder="Search...">
-                <button class="searchBtn" id="searchBtn">Search</button>
-                <div class="searchResults" id="searchResults">
-                    <div class="searchResultItem">
-                        <div class="thePfp">
-                            <img src="profile.jpg" alt="Profile Picture">
-                        </div>
-                        <div class="userInfo">
-                            <h1 class="name">Taylor Swift</h1>
-                            <p class="username">@taylorswift13</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="suggested" id="suggested">
-                    <div class="suggProf">
-                        <a class="thePfp" href="otherprofile.html">
-                            <img src="profile.jpg" alt="Profile Picture">
-                        </a>
-                        <div class="suggAtt">
-                            <h1 class="name">Taylor Swift</h1>
-                            <p class="username">@taylorswift13</p>
-                        </div>
-                    </div>
+              if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+              }
 
-                    <div class="suggProf">
-                        <a class="thePfp" href="otherprofile.html">
-                            <img src="bg1.jpg" alt="Profile Picture">
-                        </a>
-                        <div class="suggAtt">
-                            <h1 class="name">Ethel Cain</h1>
-                            <p class="username">@mothercain</p>
-                        </div>
-                    </div>
+              const data = await response.json(); // Parse JSON from the response
 
-                    <div class="suggProf">
-                        <a class="thePfp" href="otherprofile.html">
-                            <img src="bg2.jpg" alt="Profile Picture">
-                        </a>
-                        <div class="suggAtt">
-                            <h1 class="name">Fiona Apple</h1>
-                            <p class="username">@notpaper_bag</p>
-                        </div>
-                    </div>
+              if (data.message) {
+                console.log(data.message); // Log the success message
+              }
 
-                    <div class="suggProf">
-                        <a class="thePfp" href="otherprofile.html">
-                            <img src="bg4.jpg" alt="Profile Picture">
-                        </a>
-                        <div class="suggAtt">
-                            <h1 class="name">Florence Welch</h1>
-                            <p class="username">@florence</p>
-                        </div>
-                    </div>
-                    
-                </div>
-            </div>
-            <div class="topCont">
-                <div class="maxPost">
-                    <h1>🏆Top Contributors🏆</h1>
-                    <div class="contributorProf first">
-                        <a class="thePfp" href="otherprofile.html">
-                            <img src="bg1.jpg" alt="Profile Picture">
-                        </a>
-                        <div class="contributorAtt">
-                            <div class="stuff">
-                                <h1 class="name">Ethel Cain</h1>
-                                <p class="username">@mothercain</p>
-                            </div>
-                            <div class="afterStuff">🥇</div>
-                        </div>
-                    </div>
+              const { profile } = data; // Destructure to get the profile object
 
-                    <div class="contributorProf second">
-                        <a class="thePfp" href="otherprofile.html">
-                            <img src="bg4.jpg" alt="Profile Picture">
-                        </a>
-                        <div class="contributorAtt">
-                            <div class="stuff">
-                                <h1 class="name">Florence Welch</h1>
-                                <p class="username">@florence</p>
-                            </div>
-                            <div class="afterStuff">🥈</div>
-                        </div>
-                    </div>
+              // Access individual profile properties
+              const {
+                username,
+                firstName,
+                lastName,
+                email,
+                bio,
+                occupation,
+                profilePicture,
+                post_count,
+                friend_count,
+              } = profile;
 
-                    <div class="contributorProf third">
-                        <a class="thePfp" href="otherprofile.html">
-                            <img src="profile.jpg" alt="Profile Picture">
-                        </a>
-                        <div class="contributorAtt">
-                            <div class="stuff">
-                                <h1 class="name">Taylor Swift</h1>
-                                <p class="username">@taylorswift13</p>
-                            </div>
-                            <div class="afterStuff">🥉</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="maxFriend">
-                    <h1>Your Most Active Friend</h1>
-                    <div class="actFriend">
-                        <a class="thePfpFriend" href="otherprofile.html">
-                            <img src="bg2.jpg" alt="Profile Picture">
-                        </a>
-                        <div class="attFriend">
-                            <h1 class="name">Fiona Apple</h1>
-                        </div>
-                        <div class="attFriend">
-                            <p class="username">@notpaper_bag</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="reqCont">
-                <h1>Friend Requests</h1>
-                <div class="friendReq">
-                    <a class="thePfpfrnd" href="otherprofile.html">
-                        <img src="bg1.jpg" alt="Profile Picture">
-                    </a>
-                    <div class="reqAtt">
-                        <div class="reqStuff">
-                            <h1 class="name">Ethel Cain</h1>
-                            <p class="username">@mothercain</p>
-                        </div>
-                        <div class="afterfrndStuff">
-                            <button class="butt" id="accept">Accept</button>
-                            <button class="butt" id="reject">Reject</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="friendReq">
-                    <a class="thePfpfrnd" href="otherprofile.html">
-                        <img src="bg4.jpg" alt="Profile Picture">
-                    </a>
-                    <div class="reqAtt">
-                        <div class="reqStuff">
-                            <h1 class="name">Florence Welch</h1>
-                            <p class="username">@florence</p>
-                        </div>
-                        <div class="afterfrndStuff">
-                            <button class="butt" id="accept">Accept</button>
-                            <button class="butt" id="reject">Reject</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="friendReq">
-                    <a class="thePfpfrnd" href="otherprofile.html">
-                        <img src="profile.jpg" alt="Profile Picture">
-                    </a>
-                    <div class="reqAtt">
-                        <div class="reqStuff">
-                            <h1 class="name">Taylor Swift</h1>
-                            <p class="username">@taylorswift13</p>
-                        </div>
-                        <div class="afterfrndStuff">
-                            <button class="butt" id="accept">Accept</button>
-                            <button class="butt" id="reject">Reject</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+              if (profilePic) {
+                document.getElementById("sidebarPfp").src = profilePicture;
+              }
+            } catch (error) {
+              console.error("Error fetching profile info:", error);
+            }
+          });
+        </script>
+      </div>
+      <div class="sidebarThing middle">
+        <a href="mainpage.html">Home</a>
+        <a href="#">Friends</a>
+        <a href="messages.html">Messages</a>
+      </div>
+      <div class="sidebarThing sets">
+        <a href="settings.html">Settings</a>
+      </div>
     </div>
-    <script src="friends.js" defer></script>
+
+    <div class="content">
+      <div class="searchCont">
+        <input type="text" class="searchBar" placeholder="Search..." />
+        <button class="searchBtn" id="searchBtn">Search</button>
+        <div class="searchResults" id="searchResults">
+          <div class="searchResultItem">
+            <div class="thePfp">
+              <img src="profile.jpg" alt="Profile Picture" />
+            </div>
+            <div class="userInfo">
+              <h1 class="name">Taylor Swift</h1>
+              <p class="username">@taylorswift13</p>
+            </div>
+          </div>
+        </div>
+        <div class="suggested" id="suggested">
+          <div class="suggProf">
+            <a class="thePfp" href="otherprofile.html">
+              <img src="profile.jpg" alt="Profile Picture" />
+            </a>
+            <div class="suggAtt">
+              <h1 class="name">Taylor Swift</h1>
+              <p class="username">@taylorswift13</p>
+            </div>
+          </div>
+
+          <div class="suggProf">
+            <a class="thePfp" href="otherprofile.html">
+              <img src="bg1.jpg" alt="Profile Picture" />
+            </a>
+            <div class="suggAtt">
+              <h1 class="name">Ethel Cain</h1>
+              <p class="username">@mothercain</p>
+            </div>
+          </div>
+
+          <div class="suggProf">
+            <a class="thePfp" href="otherprofile.html">
+              <img src="bg2.jpg" alt="Profile Picture" />
+            </a>
+            <div class="suggAtt">
+              <h1 class="name">Fiona Apple</h1>
+              <p class="username">@notpaper_bag</p>
+            </div>
+          </div>
+
+          <div class="suggProf">
+            <a class="thePfp" href="otherprofile.html">
+              <img src="bg4.jpg" alt="Profile Picture" />
+            </a>
+            <div class="suggAtt">
+              <h1 class="name">Florence Welch</h1>
+              <p class="username">@florence</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="topCont">
+        <div class="maxPost">
+          <h1>🏆Top Contributors🏆</h1>
+          <div class="contributorProf first">
+            <a class="thePfp" href="otherprofile.html">
+              <img src="bg1.jpg" alt="Profile Picture" />
+            </a>
+            <div class="contributorAtt">
+              <div class="stuff">
+                <h1 class="name">Ethel Cain</h1>
+                <p class="username">@mothercain</p>
+              </div>
+              <div class="afterStuff">🥇</div>
+            </div>
+          </div>
+
+          <div class="contributorProf second">
+            <a class="thePfp" href="otherprofile.html">
+              <img src="bg4.jpg" alt="Profile Picture" />
+            </a>
+            <div class="contributorAtt">
+              <div class="stuff">
+                <h1 class="name">Florence Welch</h1>
+                <p class="username">@florence</p>
+              </div>
+              <div class="afterStuff">🥈</div>
+            </div>
+          </div>
+
+          <div class="contributorProf third">
+            <a class="thePfp" href="otherprofile.html">
+              <img src="profile.jpg" alt="Profile Picture" />
+            </a>
+            <div class="contributorAtt">
+              <div class="stuff">
+                <h1 class="name">Taylor Swift</h1>
+                <p class="username">@taylorswift13</p>
+              </div>
+              <div class="afterStuff">🥉</div>
+            </div>
+          </div>
+        </div>
+        <div class="maxFriend">
+          <h1>Your Most Active Friend</h1>
+          <div class="actFriend">
+            <a class="thePfpFriend" href="otherprofile.html">
+              <img src="bg2.jpg" alt="Profile Picture" />
+            </a>
+            <div class="attFriend">
+              <h1 class="name">Fiona Apple</h1>
+            </div>
+            <div class="attFriend">
+              <p class="username">@notpaper_bag</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="reqCont">
+        <h1>Friend Requests</h1>
+        <div class="friendReq">
+          <a class="thePfpfrnd" href="otherprofile.html">
+            <img src="bg1.jpg" alt="Profile Picture" />
+          </a>
+          <div class="reqAtt">
+            <div class="reqStuff">
+              <h1 class="name">Ethel Cain</h1>
+              <p class="username">@mothercain</p>
+            </div>
+            <div class="afterfrndStuff">
+              <button class="butt" id="accept">Accept</button>
+              <button class="butt" id="reject">Reject</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="friendReq">
+          <a class="thePfpfrnd" href="otherprofile.html">
+            <img src="bg4.jpg" alt="Profile Picture" />
+          </a>
+          <div class="reqAtt">
+            <div class="reqStuff">
+              <h1 class="name">Florence Welch</h1>
+              <p class="username">@florence</p>
+            </div>
+            <div class="afterfrndStuff">
+              <button class="butt" id="accept">Accept</button>
+              <button class="butt" id="reject">Reject</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="friendReq">
+          <a class="thePfpfrnd" href="otherprofile.html">
+            <img src="profile.jpg" alt="Profile Picture" />
+          </a>
+          <div class="reqAtt">
+            <div class="reqStuff">
+              <h1 class="name">Taylor Swift</h1>
+              <p class="username">@taylorswift13</p>
+            </div>
+            <div class="afterfrndStuff">
+              <button class="butt" id="accept">Accept</button>
+              <button class="butt" id="reject">Reject</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="friends.js" defer></script>
 </body>
