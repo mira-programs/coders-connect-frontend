@@ -36,12 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const posts = await fetchPosts(filterType);
             postsContainer.innerHTML = ''; // Clear previous posts
-    
+
             posts.forEach(post => {
                 // Create post element
                 const postElement = document.createElement('div');
                 postElement.classList.add('post');
-    
+
                 // Post header (user info)
                 const postHeader = document.createElement('div');
                 postHeader.classList.add('post-header');
@@ -49,14 +49,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 postPfp.src = post.userId.profilePicture || 'default-pfp.png';
                 postPfp.alt = 'Profile Picture';
                 postHeader.appendChild(postPfp);
-    
+
                 const postContent = document.createElement('div');
                 postContent.classList.add('post-content');
                 postContent.innerHTML = `<p>${post.userId.username}</p><p>${post.content}</p>`;
                 postHeader.appendChild(postContent);
-    
+
                 postElement.appendChild(postHeader);
-    
+
                 // Post media (if available)
                 if (post.media) {
                     const media = document.createElement('img');
@@ -64,50 +64,50 @@ document.addEventListener('DOMContentLoaded', () => {
                     media.alt = 'Post Media';
                     postElement.appendChild(media);
                 }
-    
+
                 // Post footer (likes/dislikes/comments)
                 const postFooter = document.createElement('div');
                 postFooter.classList.add('post-footer');
-    
+
                 const likeButton = document.createElement('img');
                 likeButton.src = 'like.png';
                 likeButton.alt = 'Like';
                 likeButton.classList.add('footerpostspics');
                 postFooter.appendChild(likeButton);
-    
+
                 const likeCount = document.createElement('p');
                 likeCount.textContent = post.likes.length;
                 likeCount.classList.add('likes-count');
                 postFooter.appendChild(likeCount);
-    
+
                 likeButton.addEventListener('click', () => toggleLikeDislike(post._id, likeButton));
-    
+
                 const dislikeButton = document.createElement('img');
                 dislikeButton.src = 'dislike.png';
                 dislikeButton.alt = 'Dislike';
                 dislikeButton.classList.add('footerpostspics');
                 postFooter.appendChild(dislikeButton);
-    
+
                 const dislikeCount = document.createElement('p');
                 dislikeCount.textContent = post.dislikes.length;
                 dislikeCount.classList.add('likes-count');
                 postFooter.appendChild(dislikeCount);
-    
+
                 dislikeButton.addEventListener('click', () => toggleLikeDislike(post._id, dislikeButton));
-    
+
                 const commentButton = document.createElement('img');
                 commentButton.src = 'comment.png';
                 commentButton.alt = 'Comment';
                 commentButton.classList.add('footerpostspics');
                 postFooter.appendChild(commentButton);
-    
+
                 postElement.appendChild(postFooter);
-    
+
                 // Display comments section
                 commentButton.addEventListener('click', () => {
                     const commentsSection = document.createElement('div');
                     commentsSection.classList.add('comments-section');
-    
+
                     const commentsHTML = post.comments.map(comment => `
                         <div class="comment-wrap" data-comment-id="${comment._id}">
                             <div class="comment-pfp">
@@ -124,21 +124,21 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                         </div>
                     `).join('');
-    
+
                     commentsSection.innerHTML = `
                         <textarea class="comment-textbox" rows="2" cols="50" placeholder="Write a comment..."></textarea>
                         <button class="comment-submit">Comment</button>
                         ${commentsHTML}
                     `;
-    
+
                     postElement.appendChild(commentsSection);
-    
+
                     const submitCommentButton = commentsSection.querySelector('.comment-submit');
                     submitCommentButton.addEventListener('click', () => {
                         const commentText = commentsSection.querySelector('.comment-textbox').value;
                         addComment(post._id, commentText);
                     });
-    
+
                     // Add event listeners for liking comments
                     const commentLikeButtons = commentsSection.querySelectorAll('.comment-like');
                     commentLikeButtons.forEach(likeButton => {
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                     });
                 });
-    
+
                 postsContainer.appendChild(postElement);
             });
         } catch (error) {
@@ -157,47 +157,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     //pack of consts
-        const fileInput = document.getElementById('fileInput');
-        const preview = document.getElementById('preview');
-        const upload = document.getElementById('uploading');
-        const fileNameDisplay = document.getElementById('fileNameDisplay');
-        const privacySelect = document.getElementById('privacySelect');
-        const postTextBox = document.getElementById('posttextbox');
-        const postButton = document.querySelector('.buttons');
-        const resetButton = document.getElementById('resetButton');
-    
-    { //things for the post preview reset etc
-        fileInput.addEventListener('change', function () { //for previewing the image uploaded for the post
-            const file = this.files[0];
+    const fileInput = document.getElementById('fileInput');
+    const preview = document.getElementById('preview');
+    const upload = document.getElementById('uploading');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    const privacySelect = document.getElementById('privacySelect');
+    const postTextBox = document.getElementById('posttextbox');
+    const postButton = document.querySelector('.buttons');
+    const resetButton = document.getElementById('resetButton');
 
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    if (file.type.startsWith('image/')) {
-                        preview.src = e.target.result;
-                        preview.style.display = 'block';
-                        fileNameDisplay.textContent = ''; // Clear file name if it is an image
-                    } else {
-                        preview.src = 'placeholder-image.png'; // Reset to placeholder if not an image
-                        preview.style.display = 'none';
-                        fileNameDisplay.textContent = file.name; // Display file name
-                    }
+    //things for the post preview reset etc
+    fileInput.addEventListener('change', function () { //for previewing the image uploaded for the post
+        const file = this.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                if (file.type.startsWith('image/')) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    fileNameDisplay.textContent = ''; // Clear file name if it is an image
+                } else {
+                    preview.src = 'placeholder-image.png'; // Reset to placeholder if not an image
+                    preview.style.display = 'none';
+                    fileNameDisplay.textContent = file.name; // Display file name
                 }
-                reader.readAsDataURL(file);
-            } else {
-                preview.src = 'placeholder-image.png'; // Reset to placeholder
-                preview.style.display = 'none';
-                fileNameDisplay.textContent = '';
             }
-        });
-
-        resetButton.addEventListener('click', function () {
-            fileInput.value = ''; // Clear the file input
-            preview.src = 'placeholder-image.png'; // Reset the preview image
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = 'placeholder-image.png'; // Reset to placeholder
             preview.style.display = 'none';
-            fileNameDisplay.textContent = ''; // Reset file name display
-        });
-    }
+            fileNameDisplay.textContent = '';
+        }
+    });
+
+    resetButton.addEventListener('click', function () {
+        fileInput.value = ''; // Clear the file input
+        preview.src = 'placeholder-image.png'; // Reset the preview image
+        preview.style.display = 'none';
+        fileNameDisplay.textContent = ''; // Reset file name display
+    });
+
     //creating a new post
     postButton.addEventListener('click', async () => {
         const newPostContent = postTextBox.value.trim();
@@ -384,53 +384,53 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('explore').classList.remove("chosensection");
         }
     });
-    async function loadSideBarPfp () {
+    async function loadSideBarPfp() {
         try {
-          const response = await fetch(
-            "http://localhost:3000/account/profile",
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem(
-                  "authToken"
-                )}`,
-              },
+            const response = await fetch(
+                "http://localhost:3000/account/profile",
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                            "authToken"
+                        )}`,
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
             }
-          );
 
-          if (!response.ok) {
-            throw new Error(`Error: ${response.statusText}`);
-          }
+            const data = await response.json(); // Parse JSON from the response
 
-          const data = await response.json(); // Parse JSON from the response
+            if (data.message) {
+                console.log(data.message); // Log the success message
+            }
 
-          if (data.message) {
-            console.log(data.message); // Log the success message
-          }
+            const { profile } = data; // Destructure to get the profile object
 
-          const { profile } = data; // Destructure to get the profile object
+            // Access individual profile properties
+            const {
+                username,
+                firstName,
+                lastName,
+                email,
+                bio,
+                occupation,
+                profilePicture,
+                post_count,
+                friend_count,
+            } = profile;
 
-          // Access individual profile properties
-          const {
-            username,
-            firstName,
-            lastName,
-            email,
-            bio,
-            occupation,
-            profilePicture,
-            post_count,
-            friend_count,
-          } = profile;
-
-          if (profilePic) {
-            document.getElementById("sidebarPfp").src = profilePicture;
-          }
+            if (profilePic) {
+                document.getElementById("sidebarPfp").src = profilePicture;
+            }
         } catch (error) {
-          console.error("Error fetching profile info:", error);
+            console.error("Error fetching profile info:", error);
         }
-      };
-      loadSideBarPfp();
+    };
+    loadSideBarPfp();
 
     loadPosts('public'); // Load initial posts
 });
