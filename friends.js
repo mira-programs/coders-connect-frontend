@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const searchResults = document.getElementsById("searchResults");
+    const searchResults = document.getElementById("searchResults");
     const suggested = document.getElementById("suggested")
     const searchBar = document.querySelector(".searchBar");
     const topContributorsContainer = document.querySelector(".maxPost");
