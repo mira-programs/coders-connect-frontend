@@ -3,10 +3,17 @@ body{
     flex-direction: row;
     font-family: 'Fira Code', monospace;
     background-color: #1e1e2e;
-    margin: 0%;
+    margin: 0;
     padding: 0;
-    overflow-x: hidden;
-    overflow-y: scroll;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    color: #dcdcdc;
+}
+.container{
+    display: flex;
+    width: 100%;
 }
 .sidebar{
     background-color: #1a1a26; 
@@ -17,7 +24,7 @@ body{
     padding-top: 20px;
     padding-bottom: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-   
+    position: fixed;
     top: 0;
     left: 0;
 }
@@ -76,24 +83,29 @@ body{
 }
 
 .chats{
-  
+    margin-left: 200px; 
     display: flex;
-    width: 300px;
+    width: 100%;
     flex-direction: column;
     overflow-y: scroll;
     height: 100%;
     width: 250px;
     background-color: #1e1e26;
-    padding-left: 10px;
-    padding-right: 10px;
-
+    padding: 20px;
+    padding-bottom: 50px;
+    padding-top: 50px;
 }
 .singlechat{
     display: flex;
+    background-color: #364d57;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    align-items: center;
     flex-direction: row;
     border: 1px solid grey;
     color: white;
-   cursor: pointer;
+    cursor: pointer;
+    border-radius: 12px;
 }
 .profile{
     height: 45px;
@@ -142,16 +154,18 @@ body{
     flex-direction: column;
     width:700px;
     height: 100%;
-    
+    flex-grow: 1;
     background-color: #1a1a26;
     color: white;
-    
+    padding-top: 50px;
 }
 .displaytexts{
     overflow-y: scroll;
     display: flex;
     flex-direction: column;
     height: 70vh;
+    padding: 15px 20px;
+    background-color: #1e1e26;
     img{
         height: 300px;
         width: 300px;
@@ -170,9 +184,66 @@ body{
 .header{
     display: flex;
     flex-direction: row;
+    align-items: center;
+    padding: 1px 20px;
+    background-color: #2a2a38;
+    border-bottom: 1px solid #171720;
+}
+.header .pfpwrap {
+    margin-right: 15px;
+}
+.header .username {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #dcdcdc;
 }
 .preview{
     display: none;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.preview img {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+.preview p {
+    font-size: 0.9rem;
+    color: #aaa;
+}
+.texting {
+    display: flex;
+}
+
+#textbox {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+#send {
+    padding: 10px 20px;
+    background-color: #61dafb;
+    border: none;
+    color: #2a2a38;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#send:hover {
+    background-color: #4da3e1;
+}
+
+.singlechat.active {
+    background-color: #3d9dc6;
+    border-radius: 10px;
+    color: #fff;
+}
+
+.singlechat:hover {
+    background-color: #444;
 }
 .message {
     --r: 1em;  /* the radius */
@@ -202,9 +273,20 @@ body{
   }
   
  .texting{
-    margin-top: 20px;
-    align-items:start;
-    justify-content: start;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 16px;
+    padding: 15px 20px;
+    height: 80px;
+    resize: none;
+    color: lightgray;
+    outline: none;
+    background-color: #2a2a38; 
+    border: none;
+    border-radius: 25px;
+    box-sizing: border-box;
+    transition: border 0.3s, box-shadow 0.3s;
 #upload{
     height: 20px;
     width: 20px;
@@ -212,6 +294,7 @@ body{
 #send{
     margin-right: 100px;
     margin-left: auto;
+    padding: 20px 26px;
      background-color: #0078d4; 
      border-radius: 10px;
      color:white;
@@ -220,16 +303,15 @@ body{
      cursor: pointer;
 }
 #textbox{
-    margin-top: 40px;
-   text-align: left;
-    
-   height: 50px;
-       width: 30vmax;
-      resize: none;
-       max-height: 150px;
-      color: white;
-      outline: none;
-       overflow: auto;
-       background-color: #1e1e2e;
+    margin-right: 10px;
+    padding: 15px;
+    background-color: #1e1e2e;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    resize: none;
+    height: 20px; 
+    overflow-y: auto;
 }
  }
