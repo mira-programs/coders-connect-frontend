@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const friendRequestsContainer = document.querySelector(".reqCont");
    
     
-    const API_BASE = "http://localhost:5000/api/friendship"; // Update with your server's base API URL
+    const API_BASE = "http://localhost:5000/friendship"; // Update with your server's base API URL
     searchBar.value = ""; // Clear the search bar text
     function clearAll() {
         searchBar.value = ""; // Clear search bar
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const response = await fetch(`${API_BASE}${endpoint}`, {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure token is set
+                    Authorization: `Bearer ${localStorage.getItem("authToken")}`, // Ensure token is set
                 },
                 ...options,
             });
