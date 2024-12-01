@@ -51,11 +51,6 @@ body{
     padding-top: 0px;
     color: #0078d4;
 }
-.container{
-    display: flex;
-  
-  
-}
 .pfp{
     width: 80px;
     height: 80px;
@@ -106,6 +101,26 @@ body{
     color: white;
     cursor: pointer;
     border-radius: 12px;
+    flex-wrap: wrap;
+}
+.singlechat .pfpwrap{
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
+.status {
+    font-size: 0.9rem;
+    color: #a3a3a3;
+    margin-top: 2px;
+    word-wrap: break-word;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.username {
+    font-size: 1.1rem;
+    color: #dcdcdc;
+    margin-right: 10px; 
+    word-wrap: break-word;
 }
 .profile{
     height: 45px;
