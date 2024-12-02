@@ -156,10 +156,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const commentsHTML = post.comments.map(comment => `
             <div class="commentwrap" data-comment-id="${comment._id}">
                 <div class="commentpfp">
-                    <img src="${comment.userProfilePic}" alt="profile" />
+                    <img src="${comment.postedBy.userProfilePic}" alt="profile" />
                 </div>
                 <div class="commentcontent">
-                    <p class="commentusername">${comment.username}</p>
+                    <p class="commentusername">${comment.postedBy.username}</p>
                     <p class="contentcomment">${comment.text}</p>
                     <div class="likes">
                         <img src="images/like.png" alt="like" class="commentlike" />
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="replies">
                                                 ${comment.replies.map(reply => `
                                                     <div class="replywrap">
-                                                        <p class="replyusername clickable">${reply.username}</p> <!-- Highlighted change: added 'clickable' class for event listener -->
+                                                        <p class="replyusername clickable">${reply.postedBy.username}</p> <!-- Highlighted change: added 'clickable' class for event listener -->
                                                         <p class="replycontent">${reply.text}</p>
                                                     </div>
                                                 `).join('')}
