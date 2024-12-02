@@ -1,14 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
     const searchResults = document.getElementById("searchResults");
-    const suggested = document.getElementById("suggested")
+    const suggested = document.getElementById("suggested");
     const searchBar = document.querySelector(".searchBar");
     const topContributorsContainer = document.querySelector(".maxPost");
     const mostActiveFriendContainer = document.querySelector(".maxFriend .actFriend");
     const friendRequestsContainer = document.querySelector(".reqCont");
-   
-    
+
     const API_BASE = "http://localhost:5000/friendship"; // Update with your server's base API URL
-    searchBar.value = ""; // Clear the search bar text
+
+    // Clear all sections
     function clearAll() {
         searchBar.value = ""; // Clear search bar
         searchResults.innerHTML = ""; // Clear search results
@@ -16,7 +16,9 @@ document.addEventListener("DOMContentLoaded", () => {
         mostActiveFriendContainer.innerHTML = ""; // Clear most active friend
         friendRequestsContainer.innerHTML = "<h1>Friend Requests</h1>"; // Reset friend requests
     }
-    clearAll(); 
+    clearAll();
+
+    // Fetch data from API
     async function fetchData(endpoint, options = {}) {
         try {
             const response = await fetch(`${API_BASE}${endpoint}`, {
@@ -26,6 +28,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 },
                 ...options,
             });
+
+            if (!response.ok) {
+                console.error(`Error fetching ${endpoint}: ${response.statusText}`);
+                return null;
+            }
             return await response.json();
         } catch (err) {
             console.error(`Error fetching ${endpoint}:`, err);
@@ -81,6 +88,25 @@ document.addEventListener("DOMContentLoaded", () => {
         return container;
     }
 
+    // Display suggested users
+    async function displaySuggested() {
+        const suggestedUsers = await fetchData("/suggested-users");
+        if (suggestedUsers && suggestedUsers.length > 0) {
+            suggested.innerHTML = ""; // Clear previous results
+            suggestedUsers.forEach(user => {
+                const suggest = createFriendElement(user, "suggProf");
+                suggested.appendChild(suggest);
+
+                // Add click event to navigate to profile
+                suggest.addEventListener("click", () => {
+                    window.location.href = `profile.html?userId=${user._id}`;
+                });
+            });
+        } else {
+            suggested.innerHTML = "<p>No suggested users available.</p>";
+        }
+    }
+
     // Search functionality
     searchBar.addEventListener("input", async (e) => {
         const query = e.target.value.trim();
@@ -104,24 +130,14 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     }
-    function dsiplaysuggested(users) {
-        suggested.innerHTML = ""; // Clear previous results
-        users.forEach((user) => {
-            const suggest = createFriendElement(user, "suggProf");
-            suggest.appendChild(searchItem);
 
-            // Add click event to navigate to profile
-            searchItem.addEventListener("click", () => {
-                window.location.href = `profile.html?userId=${user._id}`;
-            });
-        });
-    }
     // Fetch and display top contributors
     async function fetchTopContributors() {
         const contributors = await fetchData("/top-contributor");
         if (contributors) displayTopContributors(contributors);
     }
 
+    // Display top contributors
     function displayTopContributors(contributors) {
         const rankings = ["first", "second", "third"];
         topContributorsContainer.innerHTML = "<h1>🏆Top Contributors🏆</h1>";
@@ -139,6 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (friend) displayMostActiveFriend(friend);
     }
 
+    // Display most active friend
     function displayMostActiveFriend(friend) {
         mostActiveFriendContainer.innerHTML = `
             <a class="thePfpFriend" href="profile.html?userId=${friend._id}">
@@ -156,6 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (requests) displayFriendRequests(requests);
     }
 
+    // Display friend requests
     function displayFriendRequests(requests) {
         friendRequestsContainer.innerHTML = "<h1>Friend Requests</h1>";
         requests.forEach((req) => {
@@ -173,58 +191,58 @@ document.addEventListener("DOMContentLoaded", () => {
         if (result) fetchFriendRequests(); // Refresh requests after action
     }
 
-    async function loadSideBarPfp () {
+    // Load profile picture for the sidebar
+    async function loadSideBarPfp() {
         try {
-          const response = await fetch(
-            "http://localhost:3000/account/profile",
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem(
-                  "authToken"
-                )}`,
-              },
+            const response = await fetch(
+                "http://localhost:3000/account/profile",
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                            "authToken"
+                        )}`,
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
             }
-          );
 
-          if (!response.ok) {
-            throw new Error(`Error: ${response.statusText}`);
-          }
+            const data = await response.json(); // Parse JSON from the response
 
-          const data = await response.json(); // Parse JSON from the response
+            if (data.message) {
+                console.log(data.message); // Log the success message
+            }
 
-          if (data.message) {
-            console.log(data.message); // Log the success message
-          }
+            const { profile } = data; // Destructure to get the profile object
 
-          const { profile } = data; // Destructure to get the profile object
+            // Access individual profile properties
+            const {
+                username,
+                firstName,
+                lastName,
+                email,
+                bio,
+                occupation,
+                profilePicture,
+                post_count,
+                friend_count,
+            } = profile;
 
-          // Access individual profile properties
-          const {
-            username,
-            firstName,
-            lastName,
-            email,
-            bio,
-            occupation,
-            profilePicture,
-            post_count,
-            friend_count,
-          } = profile;
-
-          if (profilePic) {
-            document.getElementById("sidebarPfp").src = profilePicture;
-          }
+            if (profilePic) {
+                document.getElementById("sidebarPfp").src = profilePicture;
+            }
         } catch (error) {
-          console.error("Error fetching profile info:", error);
+            console.error("Error fetching profile info:", error);
         }
-      };
-      loadSideBarPfp();
+    };
+    loadSideBarPfp();
 
     // Initial data fetch
     fetchTopContributors();
     fetchMostActiveFriend();
     fetchFriendRequests();
-    dsiplaysuggested();
-
+    displaySuggested(); // Call the function to display suggested users
 });
