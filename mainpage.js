@@ -170,6 +170,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         <textarea class="replytextbox" rows="2" cols="50" placeholder="Reply!"></textarea>
                         <button class="rbutton">Reply!</button>
                     </div>
+                    <div class="replies">
+                                                ${comment.replies.map(reply => `
+                                                    <div class="replywrap">
+                                                        <p class="replyusername clickable">${reply.username}</p> <!-- Highlighted change: added 'clickable' class for event listener -->
+                                                        <p class="replycontent">${reply.text}</p>
+                                                    </div>
+                                                `).join('')}
+                                            </div>
                 </div>
             </div>
         `).join('');
