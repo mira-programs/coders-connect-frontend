@@ -119,6 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function displaySearchResults(users) {
+        searchResults.style.visibility= 'visible';
         searchResults.innerHTML = ""; // Clear previous results
         users.forEach((user) => {
             const searchItem = createFriendElement(user, "searchResultItem");
