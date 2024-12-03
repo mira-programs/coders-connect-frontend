@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Display comments section
                 commentButton.addEventListener('click', () => {
-                    if (!postElement.querySelector('.comments-section')) {
+                    if (!postElement.querySelector('.commentssection')) {
                         const commentsSection = createCommentsSection(post);
                         postElement.appendChild(commentsSection);
                     }
