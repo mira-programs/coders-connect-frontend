@@ -210,63 +210,65 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Display friend requests
     function displayFriendRequests(requests) {
-        console.log("Displaying Friend Requests:", requests);  // Log data before rendering
-    
+        console.log("Displaying Friend Requests:", requests); // Log data before rendering
+
         friendRequestsContainer.innerHTML = "<h1>Friend Requests</h1>";
-    
-        // Check if requests is an array (or an object containing an array)
-        if (Array.isArray(requests.requests) && requests.requests.length > 0) {
-            requests.requests.forEach((req) => {
-                console.log("Request:", req);  // Log each friend request to ensure it contains correct data
-                
+
+        // Check if requests.pendingRequests is an array and has data
+        if (Array.isArray(requests.pendingRequests) && requests.pendingRequests.length > 0) {
+            requests.pendingRequests.forEach((req) => {
+                const fromUser = req.fromUser; // Extract the nested `fromUser` object
+                console.warn("HERE IS THE REQUEST INDIVIDUALLY:", fromUser); // Log each friend's data for debugging
+
                 const container = document.createElement("div");
                 container.classList.add("friendReq");
-    
+
                 // Profile picture and link
                 const profileLink = document.createElement("a");
-                profileLink.href = `profile.html?userId=${req._id}`;
+                profileLink.href = `profile.html?userId=${fromUser.id}`;
                 const profileImg = document.createElement("img");
-                profileImg.src = req.profilePicture || "images/default.jpg"; // Use default image if none
+                profileImg.src = fromUser.profilePicture || "images/default.jpg"; // Use default image if none
                 profileImg.alt = "Profile Picture";
                 profileLink.appendChild(profileImg);
                 container.appendChild(profileLink);
-    
+
                 // User info
                 const userInfo = document.createElement("div");
                 userInfo.classList.add("userInfo");
                 userInfo.innerHTML = `
-                    <h1 class="name">${req.firstName} ${req.lastName}</h1>
-                    <p class="username">@${req.username}</p>
+                    <h1 class="name">${fromUser.username}</h1>
+                    <p class="email">${fromUser.email}</p>
                 `;
                 container.appendChild(userInfo);
-    
+
                 // Accept/Reject buttons
                 const actions = document.createElement("div");
                 actions.classList.add("afterfrndStuff");
-    
+
                 const acceptBtn = document.createElement("button");
                 acceptBtn.classList.add("butt", "accept");
                 acceptBtn.textContent = "Accept";
                 actions.appendChild(acceptBtn);
-    
+
                 const rejectBtn = document.createElement("button");
                 rejectBtn.classList.add("butt", "reject");
                 rejectBtn.textContent = "Reject";
                 actions.appendChild(rejectBtn);
-    
+
                 container.appendChild(actions);
-    
+
                 // Event listeners for accept and reject
-                acceptBtn.addEventListener("click", () => updateFriendRequest("accept", req._id));
-                rejectBtn.addEventListener("click", () => updateFriendRequest("reject", req._id));
-    
+                acceptBtn.addEventListener("click", () => updateFriendRequest("accept", req.id));
+                rejectBtn.addEventListener("click", () => updateFriendRequest("reject", req.id));
+
                 friendRequestsContainer.appendChild(container);
             });
         } else {
             friendRequestsContainer.innerHTML += "<p>No friend requests available.</p>";
         }
     }
-    
+
+
 
     // Update friend request status
     async function updateFriendRequest(action, userId) {
