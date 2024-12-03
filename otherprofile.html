@@ -83,7 +83,7 @@
         async function fetchUserProfile() {
             try {
                 alert("1");
-                const response = await fetch(`http://localhost:3000/account/otherProfile/${username}`, {
+                const response = fetch(`http://localhost:3000/account/otherProfile/${username}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -91,7 +91,7 @@
                     }
                 });
                 alert("2");
-                const result = await response.json();
+                const result = response.json();
                 alert("3");
                 if (result.status === 'SUCCESS'){
                     const user = result.data.user;
