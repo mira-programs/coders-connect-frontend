@@ -86,24 +86,23 @@
                     <!-- posts here i added them in js -->
                      <!--text-->
                     <div class="post">
-                        <p>me when Im posting</p>
+                        <p class="content">me when Im posting</p>
                     </div>
                     <!--image-->
                     <div class="post">
-                        <img src="bg1.jpg" alt="Post 2">
+                        <img class="media" src="bg1.jpg" alt="Post 2">
                     </div>
                     <!--text image-->
                     <div class="post">
-                        <p>Check out my latest project!</p>
-                        <img src="bg2.jpg" alt="Post 3">
+                        <p class="content">Check out my latest project!</p>
+                        <img class="media" src="bg2.jpg" alt="Post 3">
                     </div>
                     <!--text-->
                     <div class="post">
-                        <p>idek its lirly just a post</p>
+                        <p class="content">idek its lirly just a post</p>
                     </div>
                     <!-- image -->
                     <div class="post">
-                        <img src="bg4.jpg" alt="Post 5">
                         <img class="media" src="bg4.jpg" alt="Post 5">
                     </div>
                 </div>
@@ -113,11 +112,16 @@
                 <div class="modalContent">
                     <span class="closeModal" onclick="closePostModal()">&times;</span>
                     <div class="modalPostContent">
-                        <img id="modalPostImage" src="" alt="post pic">
+                        <img id="modalPostImage" src="" alt="post pic" onclick="triggerImageUpload()" style="display: none;">
+                        <div id="addImageBox" class="addImageBox" onclick="triggerImageUpload()" style="display: none;">
+                            <p>Click here to add an image</p>
+                        </div>
+                        <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="changeImage(event)">
                         <textarea id="modalPostText" placeholder="Edit your caption..."></textarea>
+                        <button id="removeImageBtn" class="removeImageBtn" onclick="removeImage()" style="display: none;">
+                            Remove Image
+                        </button>
                         <button class="savePostBtn" onclick="savePost()">Save</button>
-                        <button class="likeBtn">Like</button>
-                        <button class="commentBtn">Comment</button>
                     </div>
                 </div>
             </div>

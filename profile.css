@@ -429,3 +429,17 @@ button:hover {
     border-color: #888;
 }
 
+.removeImageBtn{
+    background-color: #ff4d4d;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.removeImageBtn:hover{
+    background-color: #ff1a1a;
+}
+

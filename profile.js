@@ -228,28 +228,114 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error fetching profile or posts:', error);
         }
     };
-    
-    function openPostModal(postElement) {
-        const imageSrc = postElement.querySelector('img').src;
-        const postText = postElement.querySelector('.postContent p').textContent;
-        document.getElementById('modalPostImage').src = imageSrc;
-        document.getElementById('modalPostText').value = postText;
-        document.getElementById('postModal').style.display = 'flex';
-        document.body.style.overflow = 'hidden'; 
-    }
+    var posts = document.getElementsByClassName('post');
+    Array.from(posts).forEach(function(postElement, index){
+        postElement.setAttribute('data-post-id', index);
+        postElement.addEventListener('click', function(){
+            const postText = postElement.querySelector('.content') ? postElement.querySelector('.content').textContent : '';
+            const postImage = postElement.querySelector('img') ? postElement.querySelector('img') : null;
 
-    function closePostModal() {
+            document.getElementById('modalPostText').value = postText;
+            if (postImage){
+                document.getElementById('modalPostImage').src = postImage.src;
+                document.getElementById('modalPostImage').style.display = 'block';
+                document.getElementById('addImageBox').style.display = 'none';
+            } 
+            else{
+                document.getElementById('modalPostImage').style.display = 'none';
+                document.getElementById('addImageBox').style.display = 'block';
+            }
+            document.getElementById('postModal').dataset.postId = postElement.dataset.postId;
+
+            document.getElementById('postModal').style.display = 'flex';
+            document.body.style.overflow = 'auto';
+        });
+    });
+
+    window.closePostModal = function(){
+        document.getElementById('modalPostText').value = "";
+        const modalPostImage = document.getElementById('modalPostImage');
+        const addImageBox = document.getElementById('addImageBox');
+        modalPostImage.style.display = 'none';
+        document.getElementById('imageInput').value = "";
+        addImageBox.style.display = 'block';
         document.getElementById('postModal').style.display = 'none';
         document.body.style.overflow = 'auto';
-    }
+    };
 
-    function savePost() {
+    window.savePost = function(){
+        
         const updatedText = document.getElementById('modalPostText').value;
         const modalPostImage = document.getElementById('modalPostImage');
-
-        alert('Post saved with new caption: ' + updatedText);
+        const addImageBox = document.getElementById('addImageBox');
+        const removeImageBtn = document.getElementById('removeImageBtn');
+        const postId = document.getElementById('postModal').dataset.postId;
+        const postElement = document.querySelector(`.post[data-post-id="${postId}"]`);
+        const content = postElement.querySelector('.content');
+        const image = postElement.querySelector('.media');
+        if (modalPostImage.style.display === "none") {
+            addImageBox.style.display = 'block';
+            modalPostImage.style.display = 'none';
+            if (image) {
+                image.remove();
+            }
+        } 
+        else{
+            addImageBox.style.display = 'none';
+            modalPostImage.style.display = 'block';
+            if (!image){
+                const newImg = document.createElement('img');
+                newImg.classList.add('media');
+                newImg.src = modalPostImage.src;
+                postElement.appendChild(newImg);
+            } 
+            else{
+                image.src = modalPostImage.src;
+            }
+        }
+        if (content){
+            content.textContent = updatedText;
+        }
         closePostModal();
-    }
+    };
+
+
+    window.changeImage = function(event) {
+        const file = event.target.files[0];
+        const addImageBox = document.getElementById('addImageBox');
+        const modalImage = document.getElementById('modalPostImage');
+        const removeImageBtn = document.getElementById('removeImageBtn');
+        if (file){
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageUrl = e.target.result;
+                modalImage.src = imageUrl;
+                modalImage.style.display = 'block';
+                addImageBox.style.display = 'none';
+                removeImageBtn.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+        else{
+            modalImage.style.display = 'none'; 
+            addImageBox.style.display = 'block';
+            removeImageBtn.style.display = 'none';
+        }
+    };
+
+    window.triggerImageUpload = function(){
+        document.getElementById('imageInput').click();
+    };
+
+    window.removeImage = function() {
+        const modalPostImage = document.getElementById('modalPostImage');
+        const addImageBox = document.getElementById('addImageBox');
+        const removeImageBtn = document.getElementById('removeImageBtn');
+        modalPostImage.style.display = 'none';
+        addImageBox.style.display = 'block';
+        removeImageBtn.style.display = 'none';
+        document.getElementById('imageInput').value = "";
+    };
 
     // Call the function
     fetchUserProfile();
