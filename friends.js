@@ -219,8 +219,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (Array.isArray(requests.pendingRequests) && requests.pendingRequests.length > 0) {
             requests.pendingRequests.forEach((req) => {
                 const fromUser = req.fromUser; // Extract the nested `fromUser` object
-                console.warn("HERE IS THE REQUEST INDIVIDUALLY:", fromUser); // Log each friend's data for debugging
-
                 const container = document.createElement("div");
                 container.classList.add("friendReq");
 
