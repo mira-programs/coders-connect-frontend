@@ -29,8 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     editBtn.addEventListener('click', () => {
-        document.getElementById('profileFirstName').value = firstName.textContent;
-        document.getElementById('profileLastName').value = lastName.textContent;
+        document.getElementById('editFirstName').value = firstName.textContent;
+        document.getElementById('editLastName').value = lastName.textContent;
         document.getElementById('editBio').value = bioFr.textContent;
         document.getElementById('editOccupation').value = occupationFr.textContent;
 
@@ -228,6 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error fetching profile or posts:', error);
         }
     };
+    
     function openPostModal(postElement) {
         const imageSrc = postElement.querySelector('img').src;
         const postText = postElement.querySelector('.postContent p').textContent;
