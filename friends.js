@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Search functionality
-    searchBar.addEventListener("input", async (e) => {
+    searchBar.addEventListener('click', async (e) => {
         const query = e.target.value.trim();
         if (query) {
             const users = await fetchData(`/search`);
@@ -155,8 +155,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const profileLink = document.createElement("a");
             profileLink.href = `profile.html?userId=${contributor._id}`;
             const profileImg = document.createElement("img");
-            profileImg.src = contributor.profilePicture || "images/default.jpg"; // Use default image if none
+            profileImg.src = contributor.profilePicture ; // Use default image if none
             profileImg.alt = "Profile Picture";
+            profileImg.classList.add('contributorProf');
             profileLink.appendChild(profileImg);
             container.appendChild(profileLink);
 
@@ -235,7 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const userInfo = document.createElement("div");
                 userInfo.classList.add("userInfo");
                 userInfo.innerHTML = `
-                    <h1 class="name">${req.firstName} ${req.lastName}</h1>
+                   
                     <p class="username">@${req.username}</p>
                 `;
                 container.appendChild(userInfo);
