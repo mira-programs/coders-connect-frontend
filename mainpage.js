@@ -78,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const postPfp = document.createElement('img');
                 postPfp.src = post.userId.profilePicture || 'default-pfp.png';
                 postPfp.alt = 'Profile Picture';
+                postPfp.classList.add('imgpfp');
                 postHeader.appendChild(postPfp);
 
                 const postContent = document.createElement('div');
