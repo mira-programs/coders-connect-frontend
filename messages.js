@@ -69,7 +69,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
             displayTextsDiv.innerHTML = ""; // Clear previous messages
             messages.forEach((message) => {
-                addMessageToDisplay(message);
+                const messageDiv = document.createElement("div");
+                const isSender = message.senderId === userId;
+       
+                messageDiv.classList.add("message", isSender ? "them" : "me");
+                messageDiv.id = `message-${message._id}`;
+        
+                if (message.message) {
+                    messageDiv.innerHTML = `
+                        <p class="${isSender ? "mymessage" : "theirmessage"}">
+                            ${message.message}
+                        </p>`;
+                }
+                const displayTextsDivv = document.querySelector(".displaytexts");
+                displayTextsDivv.appendChild(messageDiv);
             });
         } catch (error) {
             console.error("Error loading messages:", error);
