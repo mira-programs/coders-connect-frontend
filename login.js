@@ -63,7 +63,6 @@ document.getElementById('backBtn3').addEventListener('click', function(){
     document.getElementById('contForm').classList.add('hidden');
     document.querySelector('.welcomeScreen').classList.remove('hidden');
 });
-
 //here
 
 document.getElementById('signupForm').addEventListener('submit', async function(e) {
