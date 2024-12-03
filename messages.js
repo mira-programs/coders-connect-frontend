@@ -10,6 +10,53 @@ document.addEventListener("DOMContentLoaded", () => {
     const messagingHeader = document.querySelector(".messagingpage .header");
     const profileImage = messagingHeader.querySelector(".pfpwrap .profile");
     const usernameDisplay = messagingHeader.querySelector(".username");
+    const editStatusBtn = document.getElementById('editStatusBtn');
+    const statusInput = document.getElementById('statusInput');
+    const saveStatusBtn = document.getElementById('saveStatusBtn');
+    const userStatus = document.getElementById('user-status');
+    const statusContainer = document.querySelector('.statusCont');
+    const charLimitWarning = document.createElement('p');
+    const STATUS_MAX_LENGTH = 37;
+
+    charLimitWarning.classList.add('char-limit-warning');
+    statusContainer.appendChild(charLimitWarning);
+
+    editStatusBtn.addEventListener('click', () => {
+        userStatus.style.display = 'none';
+        editStatusBtn.style.display = 'none';
+        statusInput.style.display = 'block';
+        saveStatusBtn.style.display = 'block';
+        statusInput.value = userStatus.textContent;
+    });
+
+    saveStatusBtn.addEventListener('click', () => {
+        const newStatus = statusInput.value.trim();
+        
+        if (newStatus.length > STATUS_MAX_LENGTH) {
+            newStatus = newStatus.slice(0, STATUS_MAX_LENGTH); // Truncate to 37 characters
+            charLimitWarning.style.display = 'block'; // Show the warning message
+            charLimitWarning.textContent = `Status is limited to ${STATUS_MAX_LENGTH} characters. Extra characters were removed.`;
+        } else {
+            charLimitWarning.style.display = 'none'; // Hide warning if within limit
+        }
+        
+        if (newStatus) {
+            userStatus.textContent = newStatus;
+        } else {
+            userStatus.textContent = "Set your status here";
+        }
+        statusInput.style.display = 'none';
+        saveStatusBtn.style.display = 'none';
+        userStatus.style.display = 'block';
+        editStatusBtn.style.display = 'block';
+    });
+
+    statusInput.addEventListener('input', () => {
+        const currentText = statusInput.value;
+        if (currentText.length > STATUS_MAX_LENGTH) {
+            statusInput.value = currentText.slice(0, STATUS_MAX_LENGTH); // Truncate the input
+        }
+    });
 
     let activeChatUsername = null;
     let activeChatUserId = null;
