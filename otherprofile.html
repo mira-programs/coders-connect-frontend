@@ -82,7 +82,13 @@
         
         async function fetchUserProfile() {
             try {
-                const response = await fetch(`http://localhost:3000/account/otherProfile/${username}`);
+                const response = await fetch(`http://localhost:3000/account/otherProfile/${username}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
                 const result = await response.json();
         
                 if (result.status === 'SUCCESS'){
@@ -140,7 +146,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                     }
                 });
         
