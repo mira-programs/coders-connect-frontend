@@ -82,6 +82,7 @@
         
         async function fetchUserProfile() {
             try {
+                alert("1");
                 const response = await fetch(`http://localhost:3000/account/otherProfile/${username}`, {
                     method: 'GET',
                     headers: {
@@ -89,12 +90,14 @@
                         'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                     }
                 });
+                alert("2");
                 const result = await response.json();
-        
+                alert("3");
                 if (result.status === 'SUCCESS'){
                     const user = result.data.user;
                     const posts = result.data.posts;
                     isFriend = result.data.isFriend;
+                    alert("4");
                     otherprofileFirstName.textContent = user.firstName;
                     otherprofileLastName.textContent = user.lastName;
                     otherprofileUsername.textContent = `@${user.username}`;
@@ -103,8 +106,11 @@
                     mainPfp.src = user.profilePicture;
                     numPosts.textContent = user.numPosts;
                     numFriends.textContent = user.numFriends;
+                    alert("5");
                     posts.forEach(post => {
+                        alert("6");
                         if (displayPosts(post)){
+                            alert("7");
                             const postElement = document.createElement('div');
                             postElement.classList.add('post');
                             postElement.innerHTML = `
@@ -112,6 +118,7 @@
                                 <p>${post.content}</p>
                             `;
                             if (post.media){
+                                alert("8");
                                 postElement.innerHTML += `<img src="${post.media}" alt="Post Media">`;
                             }
                             postGrid.appendChild(postElement);
