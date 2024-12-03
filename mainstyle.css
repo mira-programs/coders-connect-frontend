@@ -308,6 +308,10 @@ body{
         cursor: pointer;
     }
 }
+.username{
+    color: white;
+   text-decoration: none;
+}
 .sharereply{
     
     display: flex;

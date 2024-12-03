@@ -76,14 +76,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const postHeader = document.createElement('div');
                 postHeader.classList.add('post-header');
                 const postPfp = document.createElement('img');
-                postPfp.src = post.userId.profilePicture || 'default-pfp.png';
+                postPfp.src = post.userId.profilePicture ;
                 postPfp.alt = 'Profile Picture';
                 postPfp.classList.add('imgpfp');
                 postHeader.appendChild(postPfp);
 
                 const postContent = document.createElement('div');
                 postContent.classList.add('post-content');
-                postContent.innerHTML = `<p>${post.userId.username}</p><p>${post.content}</p>`;
+                postContent.innerHTML = `<a class="username" href="otherprofile.html">${post.userId.username}</a><p>${post.content}</p>`;
+               
                 postHeader.appendChild(postContent);
 
                 postElement.appendChild(postHeader);
@@ -184,8 +185,9 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
 
         commentsSection.innerHTML = `
+        <div class="sharecomment">
             <textarea class="commenttextbox" rows="2" cols="50" placeholder="comment!"></textarea>
-            <button class="cbutton">Comment!</button>
+            <button class="cbutton">Comment!</button> </div>
             ${commentsHTML}
         `;
 
