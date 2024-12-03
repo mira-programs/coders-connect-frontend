@@ -228,6 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const profileLink = document.createElement("a");
                 profileLink.href = `profile.html?userId=${fromUser.id}`;
                 const profileImg = document.createElement("img");
+                profileImg.classList.add("thePfpFrnd");
                 profileImg.src = fromUser.profilePicture || "images/default.jpg"; // Use default image if none
                 profileImg.alt = "Profile Picture";
                 profileLink.appendChild(profileImg);
