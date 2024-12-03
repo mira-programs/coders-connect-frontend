@@ -91,6 +91,12 @@
                     }
                 });
                 alert("2");
+                if (!response.ok) {
+            // If the status is not OK, log the response status and exit
+            alert(`Error: ${response.status} - ${response.statusText}`);
+            console.error(`Error: ${response.status} - ${response.statusText}`);
+            return;
+        }
                 const result = response.json();
                 alert("3");
                 if (result.status === 'SUCCESS'){
