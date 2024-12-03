@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const socket = io("https://cdn.socket.io/4.5.1/socket.io.min.js"); // Update this to match Socket.IO server
+    const socket = io("http://localhost:3000"); // Update this to match Socket.IO server
     const chatsDiv = document.querySelector(".chats");
     const displayTextsDiv = document.querySelector(".displaytexts");
     const sendButton = document.getElementById("send");
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Update the messaging header
     function updateMessagingHeader(username, profilePicture) {
-        profileImage.src = profilePicture || "default.png";
+        profileImage.src = profilePicture ;
         usernameDisplay.textContent = username;
         activeChatUsername = username;
     }
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadMessages(userId) {
         try {
             activeChatUserId = userId;
-            const response = await fetch(`http://localhost:3000/message/messages/${userId}`, {
+            const response = await fetch(`http://localhost:3000/message/${activeChatUserId}`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
             });
             const messages = await response.json();
@@ -90,17 +90,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     ${message.message}
                 </p>`;
         }
-
-        displayTextsDiv.appendChild(messageDiv);
+        const displayTextsDivv = document.querySelector(".displaytexts");
+        displayTextsDivv.appendChild(messageDiv);
     }
 
     // Handle sending a message
     sendButton.addEventListener("click", async () => {
         const messageContent = textBox.value.trim();
-        if (!messageContent || !activeChatUserId) return;
-
+        if (!messageContent ) return;
+    
         try {
-            const response = await fetch(`http://localhost:3000/message/messages/send/${activeChatUserId}`, {
+            const response = await fetch(`http://localhost:3000/message/send/${activeChatUserId}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
