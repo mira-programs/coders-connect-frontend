@@ -260,8 +260,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 container.appendChild(actions);
 
                 // Event listeners for accept and reject
-                acceptBtn.addEventListener("click", () => updateFriendRequest("accept", req.id));
-                rejectBtn.addEventListener("click", () => updateFriendRequest("reject", req.id));
+                acceptBtn.addEventListener("click", () => updateFriendRequest("accept", fromUser.id));
+                rejectBtn.addEventListener("click", () => updateFriendRequest("reject", fromUser.id));
 
                 friendRequestsContainer.appendChild(container);
             });
