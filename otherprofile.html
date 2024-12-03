@@ -47,11 +47,11 @@
 
             <div class="demog">
                 <div class="stat">
-                    <strong id="numPosts">120</strong>  <!--Here are posts and friends etc etc-->
+                    <strong id="numPosts">0</strong>
                     <span>Posts</span>
                 </div>
                 <div class="stat">
-                    <strong id="numFriends">200</strong>
+                    <strong id="numFriends">0</strong>
                     <span>Friends</span>
                 </div>
             </div>
@@ -64,7 +64,101 @@
             
         </div>
     </div>
-    <script src="profile.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username'); 
+        const otherprofileFirstName = document.getElementById('otherprofileFirstName');
+        const otherprofileLastName = document.getElementById('otherprofileLastName');
+        const otherprofileUsername = document.getElementById('otherprofileUsername');
+        const otherprofileOccupation = document.getElementById('otherprofileOccupation');
+        const otherprofileBio = document.getElementById('otherprofileBio');
+        const mainPfp = document.getElementById('mainPfp');
+        const postGrid = document.getElementById('postGrid');
+        const numPosts = document.getElementById('numPosts');
+        const numFriends = document.getElementById('numFriends');
+        const frndBtn = document.getElementById('frndBtn');
+
+        let isFriend = false;
+        
+        async function fetchUserProfile() {
+            try {
+                const response = await fetch(`http://localhost:3000/account/otherProfile/${username}`);
+                const result = await response.json();
+        
+                if (result.status === 'SUCCESS'){
+                    const user = result.data.user;
+                    const posts = result.data.posts;
+                    isFriend = result.data.isFriend;
+                    otherprofileFirstName.textContent = user.firstName;
+                    otherprofileLastName.textContent = user.lastName;
+                    otherprofileUsername.textContent = `@${user.username}`;
+                    otherprofileOccupation.textContent = user.occupation;
+                    otherprofileBio.textContent = user.bio;
+                    mainPfp.src = user.profilePicture;
+                    numPosts.textContent = user.numPosts;
+                    numFriends.textContent = user.numFriends;
+                    posts.forEach(post => {
+                        if (displayPosts(post)){
+                            const postElement = document.createElement('div');
+                            postElement.classList.add('post');
+                            postElement.innerHTML = `
+                                <h2>${post.title}</h2>
+                                <p>${post.content}</p>
+                            `;
+                            if (post.media){
+                                postElement.innerHTML += `<img src="${post.media}" alt="Post Media">`;
+                            }
+                            postGrid.appendChild(postElement);
+                        }
+                    });
+                } 
+                else{
+                    alert(result.message);
+                }
+            } 
+            catch (err){
+                console.error("Error fetching profile:", err);
+                alert("An error occurred while loading the profile.");
+            }
+        }
+        function displayPosts(post){
+            if (post.privacy === 'public'){
+                return true;
+            }
+            if (post.privacy === 'friends' && isFriend){
+                return true;
+            }
+            if (post.privacy === 'private' && username === localStorage.getItem('username')) {
+                return true;
+            }
+            return false;
+        }
+        fetchUserProfile();
+        frndBtn.addEventListener('click', async () => {
+            try {
+                const response = await fetch(`http://localhost:3000/friendship/send-friend-request/${username}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+        
+                const result = await response.json();
+                
+                if (result.status === 'SUCCESS') {
+                    alert('Friend request sent!');
+                    isFriend = true;
+                } else {
+                    alert(result.message);
+                }
+            } catch (err) {
+                console.error('Error sending friend request:', err);
+                alert('An error occurred while sending the friend request.');
+            }
+        });
+        </script>
+        
 </body>
 
 </html>
