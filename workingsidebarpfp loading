@@ -1,0 +1,30 @@
+ async function loadSideBarPfp() {
+        try {
+            const response = await fetch(
+                "http://localhost:3000/account/profile",
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+
+            const data = await response.json(); // Parse JSON from the response
+            console.log("Profile info:", data); // Log profile info for debugging
+
+            const { profile } = data; // Destructure to get the profile object
+            const { profilePicture } = profile;
+
+            if (profilePicture) {
+                document.getElementById("sidebarPfp").src = profilePicture;
+            }
+        } catch (error) {
+            console.error("Error fetching profile info:", error);
+        }
+    };
+    loadSideBarPfp();
