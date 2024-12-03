@@ -97,6 +97,12 @@
             console.error(`Error: ${response.status} - ${response.statusText}`);
             return;
         }
+        const contentType = response.headers.get("Content-Type");
+        if (!contentType || !contentType.includes("application/json")) {
+            alert("Error: The server did not return a JSON response.");
+            console.error("The server did not return a JSON response.");
+            return;
+        }
                 const result = response.json();
                 alert("3");
                 if (result.status === 'SUCCESS'){
