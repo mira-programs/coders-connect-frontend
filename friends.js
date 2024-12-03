@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const mostActiveFriendContainer = document.querySelector(".maxFriend .actFriend");
     const friendRequestsContainer = document.querySelector(".reqCont");
 
-    const API_BASE = "http://localhost:5000/friendship"; // Update with your server's base API URL
+    const API_BASE = "http://localhost:3000/friendship"; // Update with your server's base API URL
 
     // Clear all sections
     function clearAll() {
