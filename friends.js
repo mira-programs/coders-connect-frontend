@@ -85,10 +85,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Search functionality
-    searchBar.addEventListener('click', async (e) => {
-        const query = e.target.value.trim();
+    searchBar.addEventListener('click',  () => {
+        const query = document.getElementById("textin").value.trim();
         if (query) {
-            const users = await fetchData(`/search`);
+            const users = fetchData(`/search`);
             console.log("Search results:", users);
             if (users) displaySearchResults(users);
         } else {
