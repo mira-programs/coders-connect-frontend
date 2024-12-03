@@ -25,41 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return [];
         }
     }
-    postButton.addEventListener('click', async () => {
-        const newPostContent = postTextBox.value.trim();
-        const newPostPrivacy = privacySelect.value;
-        const newPostMedia = fileInput.files[0];
-    
-        if (newPostContent) {
-            const formData = new FormData();
-            formData.append('content', newPostContent);
-            formData.append('privacy', newPostPrivacy);
-            if (newPostMedia) {
-                formData.append('media', newPostMedia);
-            }
-            try {
-                const response = await fetch('http://localhost:3000/post/create', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                    },
-                    body: formData,
-                });
-                if (response.ok) {
-                    postTextBox.value = '';
-                    preview.src = '';
-                    preview.style.display = 'none';
-                    loadPosts('public'); // Reload posts
-                } else {
-                    console.error('Failed to post');
-                }
-            } catch (error) {
-                console.error('Error posting content:', error);
-            }
-        } else {
-            alert('Please write something to post.');
-        }
-    });
     
     // Function to load posts
     async function loadPosts(filterType) {
