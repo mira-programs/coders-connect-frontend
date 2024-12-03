@@ -68,7 +68,20 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
+        // Update Profile Picture (if changed)
         if (newPfp) {
+            const formData = new FormData();
+            formData.append('profilePicture', newPfp);
+
+            await fetch('http://localhost:3000/account/update-profilepicture', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                },
+                body: formData
+            });
+
+            // Update the UI immediately (for the profile picture)
             const reader = new FileReader();
             reader.onload = function (e) {
                 pfpMain.src = e.target.result;
@@ -80,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Close the edit box
         editBox.style.display = 'none';
 
-        // API Calls
+        // API Calls to update Bio and Occupation
         try {
             if (newBio) {
                 await fetch('http://localhost:3000/account/update-bio', {
@@ -101,19 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                     },
                     body: JSON.stringify({ occupation: newOccupation })
-                });
-            }
-
-            if (newPfp) {
-                const formData = new FormData();
-                formData.append('profilePicture', newPfp);
-
-                await fetch('http://localhost:3000/account/update-profilepicture', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                    },
-                    body: formData
                 });
             }
 
@@ -163,8 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const profilePic = document.getElementById('mainPfp');
             profilePic.src = profilePicture || "default_profile_pic.jpg";
-            sidebarPfp.src = profilePicture;
-
+            sidebarPfp.src = profilePicture || "default_profile_pic.jpg";  // Handle case when no picture is available
         } catch (error) {
             console.error('Error fetching user profile:', error);
         }
@@ -214,7 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     openPostModal(post);
                 });
             });
-
         } catch (error) {
             console.error('Error fetching posts:', error);
         }
@@ -241,21 +239,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         document.getElementById('postModal').style.display = 'flex';
-        document.body.style.overflow = 'hidden';
     }
 
-    // Close post modal
-    window.closePostModal = function() {
-        const modalPostImage = document.getElementById('modalPostImage');
-        const addImageBox = document.getElementById('addImageBox');
-        modalPostImage.style.display = 'none';
-        addImageBox.style.display = 'block';
-        document.getElementById('postModal').style.display = 'none';
-        document.body.style.overflow = 'auto';
-    };
-
-    // Save edited post
-    window.savePost = async function() {
+    // Save post edits
+    window.savePost = async function () {
         const postContent = document.getElementById('modalPostText').value;
         const postImage = document.getElementById('modalPostImage');
 
@@ -275,7 +262,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(updatedPost)
             });
 
-            // After saving, update the post in the UI
             const postElement = document.querySelector(`.post[data-post-id="${currentPostId}"]`);
             postElement.querySelector('.content').textContent = postContent;
 
@@ -296,44 +282,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    window.changeImage = function(event) {
+    // Trigger post modal image upload
+    window.changeImage = function (event) {
         const file = event.target.files[0];
         const addImageBox = document.getElementById('addImageBox');
         const modalImage = document.getElementById('modalPostImage');
         const removeImageBtn = document.getElementById('removeImageBtn');
-        if (file){
+
+        if (file) {
             const reader = new FileReader();
-            reader.onload = function(e) {
-                const imageUrl = e.target.result;
-                modalImage.src = imageUrl;
+            reader.onload = function (e) {
+                modalImage.src = e.target.result;
                 modalImage.style.display = 'block';
                 addImageBox.style.display = 'none';
                 removeImageBtn.style.display = 'block';
             };
             reader.readAsDataURL(file);
-        }
-        else{
-            modalImage.style.display = 'none'; 
+        } else {
+            modalImage.style.display = 'none';
             addImageBox.style.display = 'block';
             removeImageBtn.style.display = 'none';
         }
     };
 
-    window.triggerImageUpload = function() {
-        document.getElementById('imageInput').click();
-    };
-
-    window.removeImage = function() {
+    window.removeImage = function () {
         const modalPostImage = document.getElementById('modalPostImage');
         const addImageBox = document.getElementById('addImageBox');
         const removeImageBtn = document.getElementById('removeImageBtn');
         modalPostImage.style.display = 'none';
         addImageBox.style.display = 'block';
         removeImageBtn.style.display = 'none';
-        document.getElementById('imageInput').value = "";
+        document.getElementById('imageInput').value = '';
     };
 
-    // Call the function
+    // Fetch user profile and posts when the page loads
     fetchUserProfile();
     loadMyPosts();
 });
