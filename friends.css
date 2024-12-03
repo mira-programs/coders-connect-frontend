@@ -146,7 +146,7 @@ body{
 }
 
 .searchResults {
-    display: none; /*comment when you wanna check it out*/
+  visibility: hidden;
     position: absolute;   
     width: 350px;
     height: 700px;
